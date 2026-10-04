@@ -7,7 +7,7 @@ This is a project to help out teams who may benefit from a database of important
   * gemma4:e4b
   * nomic-embed-text
 
-<h4>Install Insturctions:</h4>
+<h4>Install Instructions:</h4>
 
 1. Download the package for macOS or Windows, if you're using Linux you probably know how to run from source so do that.
 
