@@ -1,0 +1,319 @@
+LIMELIGHT 3A
+LIMELIGHT 3A IS BEST FOR FTC OVER OTHER LIMELIGHT MODELS
+1. Mounting Limelight 3A
+Threaded Mounting (Recommended)
+• Use at least 2 M3 or M4 screws to mount your LL3A to Rev or GoBilda Channel using the threaded
+mount holes
+• You can also use VHB tape or zip ties to constrain your Limelight
+Thru-Hole Mounting
+• Use 1 1/4" #10-32 or #10-24 bolts with nylock nuts
+• Alternatively, use 28mm M4 bolts with nylock nuts
+2. Wiring Limelight 3A
+When you're ready to use your Limelight on your robot:
+• Run a USBC to USBA cable from your Limelight 3A to your Control Hub's USB 3.0 Port
+• Connect to your Control Hub by plugging into a USB 3.0 port (blue port)
+3. Accessing the Web Interface
+After connecting your Limelight 3A to your computer via USB:
+1 Wait for the green status light to become active (about 15-20 seconds)
+2 Use one of these methods to access the web interface:
+◦ Method 1: Open the Limelight Hardware Manager application, scan for Limelights, and double-click
+on your Limelight 3A when it appears
+◦ Method 2(EASIER): Open a web browser and navigate to http://limelight.local:5801
+Once connected, you'll have access to:
+• Settings tab - Configure team number, hostname, and other system settings
+• Vision Pipeline tabs - Set up and tune your vision processing pipelines
+• Camera & Crosshair tab - Adjust camera settings and crosshair parameters
+• 3D Visualization tab - View real-time AprilTag detection and localization
+All configuration is done through this web interface. Changes are saved automatically to your Limelight.
+4. Updating LimelightOS
+CAUTION
+Backup your pipelines and scripts before upgrading - they will be erased during this process!
+1 Power off your Limelight
+2 Download the latest Limelight Hardware Manager and Limelight OS image
+3 Hold the blue config button while connecting a USB-C cable from your laptop to your Limelight
+4 Open Limelight Hardware Manager
+5 Navigate to the "Flash OS" tab
+6 Select the OS image file and wait for extraction to complete
+7 Click "Refresh Device List"
+8 Select your Limelight device from the list
+9 Click "Flash Device" and wait for completion
+10 Remove the USB cable after completion
+5. Setup Process
+1 Connect your Limelight to your laptop with a USB cable
+2 Access the web interface as described in section 3
+3 Go to the Settings tab and set your team number, then click "Restart Vision Client"
+4 Configure your pipelines as desired (AprilTag, Neural Networks, Custom Python, etc.)
+5 When ready for competition, plug your Limelight 3A into your Control Hub's USB 3.0 port
+6 In the FTC DriverStation App, click "Configure Robot"
+7 If you don't have an active configuration, you may need to make a new one
+8 Click the "scan" button
+9 You should see an "Ethernet Device" appear
+10 You can edit the name of this device to "limelight" for clarity
+11 Now you can initialize a Limelight3A object in your code using the hardware map
+6. Available Pipeline Types
+The Limelight 3A offers the same vision processing features as other Limelight models:
+• AprilTag tracking and robot localization
+
+• Color blob tracking
+• Neural network object detection (CPU only)
+• Neural network classification
+• Barcode tracking
+• Custom Python pipelines
+7. FTC Programming(EXAMPLE)
+
+/https://github.com/FIRST-Tech-
+Challenge/FtcRobotController/blob/master/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/
+
+Status Light Indicators
+• Green Light: Blinks slowly (no targets), blinks quickly (targets detected)
+Pipeline Setup
+LimelightOS stores up to 10 unique vision pipelines. A pipeline is like a small program that takes an image,
+processes the image, and provides a results object for you to use in your robot code. Pipelines run anywhere
+from 10fps (CPU Neural Networks) to 90fps (Color-based object tracking).
+To start tuning pipelines, connect to the web interface over ethernet, wifi, or usb as described in your unit's
+quick start guide.
+If you are an advanced user and have changed the USB Index or Hostname of your LL, you can access the
+web interface at http://172.28.(usb_index).1:5801, http://172.29.(usb_index).1:5801, or http://.local:5801
+INFO
+To edit multiple pipelines, you must first check the “Ignore NetworkTables Index” checkbox in the web
+interface. This tells the camera to ignore any code telling it to change pipelines.
+To download your pipelines for backups and sharing, simply click the “download” button next to your
+pipeline’s name. To upload a pipeline, click the “upload” button.
+Here’s an example of a robot that utilizes two pipelines:
+https://thumbs.gfycat.com/UnfitLankyHadrosaurus-size_restricted.gif The first pipeline is tuned to target
+single vertical stripes. The second pipeline is tuned to find a combo of two horizontal stripes. The code for
+this robot is available in the “Aim and Range” case study.
+Notice that when the robot switches pipelines, the web interface auto-loads the new pipeline.
+Input Tab
+The Input Tab hosts controls to change the raw camera image before it is passed through the processing
+pipeline.
+Pipeline Type
+Controls the desired pipeline type (AprilTags, Neural Networks, Python, etc.)
+Source Image
+Controls the source of the image that is passed through the pipeline. Switch to “Snapshot” to test your vision
+pipelines on stored Snapshots.
+This control auto-resets to “Camera” when the GUI is closed.
+Resolution + Zoom
+Controls the resolution of the camera and vision pipeline. We recommend using the 320x240 pipeline unless
+you are utilizing 3D functionality.
+320x240 pipelines execute at 90fps, while 960x720 pipelines execute at 22 fps. In 2020, 2x and 3x Hardware
+Zoom options were added to this field. The zoom options are not digital and use 100% real sensor pixels.
+LEDs
+Controls the default LED mode for this pipeline. This may be overridden during a match with the “LED”
+network table option.
+Limelight 2+ users have access to an “LED Brightness” Slider which allows for LED dimming.
+Stream Orientation
+Controls the orientation of the stream after all processing. This does not affect results data in any way.
+Exposure
+
+Controls the camera’s exposure setting in .01 millisecond intervals. Think of a camera as a grid of light-
+collecting buckets - exposure time controls how long your camera’s “buckets” are open per frame. Lowering
+
+the exposure time will effectively darken your image. Low and fixed exposure times are crucial in FRC, as
+they black-out the bulk of incoming image data. Well-lit retroreflective tape will stand out in a mostly black
+image, turning vision processing into a straightforward process.
+
+Black Level Offset
+Increasing the black level offset can significantly darken your camera stream. This should be increased to
+further remove arena lights and bright spots from your image. This is a sensor-level setting, and not a fake
+digital brightness setting.
+Sensor Gain
+Increasing sensor gain will effectively increase the brightness of the image, but it will usually add noise to the
+image as well. You can use Sensor Gain and Black level offset to brighten the image without increasing
+exposure time. This will minimize motion blur for high-speed tracking applications.
+Red Balance, Blue Balance
+Controls the intensity of Red and Blue color components in your image. These collectively control your
+Limelight’s white balance. We recommend leaving these untouched
+Crosshair Calibration
+Limelight’s crosshairs simplify offset calibration. Rather than storing angular offsets in code, you can align
+your robot to a target, and click "calibrate".
+Calibrating a crosshair moves the “zero” of your targeting data. This is very useful if your Limelight isn’t
+perfectly centered on your robot.
+Single Crosshair Mode
+Line-up your robot at its ideal scoring location+rotation, and click “calibrate”. Now a tx and ty of “zero” equate
+to a perfectly aligned robot. If your robot needs to be recalibrated for a new field, simply take a practice
+match to find the perfect alignment for your robot, and click “calibrate” during your match.
+Dual Crosshair Mode
+Imagine a robot with an off-axis camera or shooter that needs to shoot gameobjects into a goal from many
+positions on the field. As the robot approaches the goal, its crosshair must adjust in real-time to compensate.
+Dual crosshair mode is built for this functionality. Line-up your robot at its closest scoring position+rotation,
+and calibrate crosshair “A”. Line-up your robot at its farthest scoring position+rotation, and calibrate crosshair
+“B”. When you calibrate in dual-crosshair mode, crosshairs also store an area value. You will notice that as
+your robot moves between its min and max scoring distances, the crosshair moves between crosshair “A”
+and crosshair “B”. This is done by checking the area of the target, and comparing it to the two target areas
+seen during calibration.
+Tracking AprilTags
+AprilTags are tracked using the standard "tx", "ty", and "ta" values. No code changes are required to upgrade
+a color/retroreflective tracking robot to apriltags. "botpose" and "campose" may also be used for field-space
+and target-space 3D tracking.
+For more advanced usage with multiple tags, the JSON results dump may be used.
+Quick Start for FRC AprilTags
+• Input Tab - Change "Pipeline Type" to "Fiducial Markers"
+• Input Tab - Use the highest available resolution for 3D tracking, or use 640x480 for pure 2D
+tracking.
+• Standard Tab - Make sure "family" is set to "AprilTag Classic 36h11"
+• Input Tab - Set "Black Level" to zero
+• Input Tab - Set "Gain" to 15
+• Input Tab - Reduce exposure to reduce tracking loss while in motion due to motion blur. Stop
+reducing once tracking reliability decreases. You may need to increase exposure at dimly-lit events.
+• Standard Tab - If would like to increase your framerate, increase the "Detector Downscale"
+• If you want to use 3D tracking and 2D tx/ty tracking simultaneously, set the priority Tag ID over
+networktables to configure the preferred tag for 2D tracking.
+• Click the "Gear" Icon, and make sure your team number is set and that a static IP is configured.
+• Click "Change Team Number" and "Change IP Settings" if you changed their corresponding
+settings. Powercycle your robot.
+• You're done! Use "tx" and "ty" from networktables. Copy the code sample on the "getting started"
+page.
+Tips
+For ideal tracking, consider the following:
+• Your tags should be as flat as possible.
+• Your Limelight should be mounted above or below tag height and angled up/down such that the
+target is centered. Your target should look as trapezoidal as possible from your camera's perspective. You
+
+don't want your camera to ever be completely "head-on" with a tag if you want to avoid tag flipping.
+There is an interplay between the following variables for AprilTag Tracking:
+• Increasing capture resolution will always increase 3D accuracy and increase 3d stability. This will
+also reduce the rate of ambiguity flipping from most perspectives. It will usually increase range. This will
+reduce pipeline framerate.
+• Increasing detector downscale will always increase pipeline framerate. It will decrease effective
+range, but in some cases this may be negligible. It will not affect 3D accuracy, 3D stability, or decoding
+accuracy.
+• Reducing exposure will always improve motion-blur resilience. This is actually really easy to
+observe. This may reduce range.
+• Reducing the brightness and contrast of the image will generally improve pipeline framerate and
+reduce range.
+• Increasing Sensor gain allows you to increase brightness without increasing exposure. It may
+reduce 3D stability, and it may reduce tracking stability.
+Input Tab
+The Input Tab hosts controls to change the raw camera image before it is passed through the processing
+pipeline. See the "Building a retroreflective/color pipeline" page for more details.
+To track AprilTags:
+• Change "Pipeline Type" to "Fiducial Markers"
+• Set "Black Level" to zero
+At this point, it is a matter of balancing sensor gain and exposure time. You want to be able to see the tags
+with the smallest exposure possible to minimize motion blur. This usually calls for a high sensor gain setting.
+For simple 2D tracking, it is often advisable to max-out your sensor gain, and then increase your exposure
+from zero until targets are sufficiently tracked. Make sure the correct family is selected in the "Standard" tab if
+tracking isn't working.
+Standard Tab
+Family
+Selects the fiducial/AprilTag family type. For FRC, you should selection "AprilTag Classic 36h11" Marker Size
+Sets the expected size of the tags your robot will encounter in mm. For FRC, this should be set to 165.1
+(152.4 for 2023 tags)
+Detector Downscale
+Increasing this number will result in significant performance boosts. This this will sometimes result in reduced
+range, but the cost is usually minimal.
+ID Filters
+ID Filters allow you specify exactly which tags you care about. For most FRC teams, each pipeline should be
+configured to track exactly one tag ID. This is a comma-separated list of numbers (eg. "0,1"). This feature is
+important for eliminating the vast majority of false-positives.
+Cropping
+Cropping removes content from the image for huge performance boosts. Use the NT "crop" key to crop
+dynamically during matches
+Multi-Target Sorting and Grouping
+This allows for the exact grouping functionality seen in standard retroreflective pipelines. In most games, the
+only feature to modify is the "Area" filter, which will allow you to filter-out small tags.
+Getting Started with Neural Networks
+With Limelight's neural network pipelines, once-impossible computer vision challenges are now trivial.
+Learning-based vision already plays an enormous role in bleeding-edge robots and self-driving vehicles, so
+we are excited to bring this technology to FIRST students.
+INFO
+Limelight 1, 2, and 3 all support learning-based vision with the help of Google Coral. Google Coral is a USB
+accelerator that must be purchased separately.
+Check out 2023 World Champion 1323's use of Limelight's Neural Network pipeline:
+Download pretrained neural networks from our downloads page.
+In FRC, teams have always wanted to track game pieces on the field during the autonomous and
+teleoperated periods. Using Limelight's "Neural Detector" pipeline, teams are able to track pieces just like
+any other target with zero tuning.
+"Neural Classifier" pipelines, on the other hand, allow teams to add advanced sensing capabilities to their
+robots. Let's say a team wanted to determine whether their robot was in possession of a Red ball, a Blue
+ball, or not in possession of a ball. A Limelight pointed inside a robot could run a classifier trained to
+
+determine one of these three cases. A classifier could also count the number of objects in a hopper,
+determine the state of a field feature, etc.
+Neural Detector and Classifier networks require the addition of a Google Coral USB accelerator. The Google
+Coral Accelerator is an ASIC (application specific integrated circuit) that is purpose-built for neural network
+inference. You can think of the term "inference" as "execution" or "running data through the neural network
+and producing an output".
+If you are interested in building a deeper understanding of machine learning, we recommend starting with
+this video from 3blue1brown
+Programmers can learn more in a hands-on fashion with the following book
+Neural Detector Pipeline
+To get started, ensure your Google Coral is plugged into the USB-A port on your Limelight.
+Change "Pipeline Type" to "Neural Detector" to start running inference on the built-in test model. Download
+pretrained neural networks from our downloads page, and upload it to begin tracking game pieces.
+Change the "confidence threshold" slider to adjust the required confidence for a successful detection.
+Change the crop window to easily ignore objects outside of the desired detection zone.
+Neural Classifier Pipeline
+To get started, ensure your Google Coral is plugged into the USB-A port on your Limelight.
+Change "Pipeline Type" to "Neural Classifier" to start running inference on the built-in test model. You can
+train your own classifier models using the method documented in the "Training" section.
+The "Crop" window will allow you to better control the image used for neural network inference. While
+classifier models are capable of incredible levels of generalization in diverse environments, you will see
+greater success by minimizing the number of variables in your image.
+Training a Custom Classifier Model
+Google's Teachable Machine is a browser-based tool that allows users to create classifier models without
+any code or advanced understanding of machine learning.
+Data Collection
+Gather images for each class you want to recognize. Ensure that you have a balanced dataset (a roughly
+equal number of images for each class). Ensure you have diversity in camera angle, lighting, backgrounds,
+object characteristics, etc.
+Training with Teachable Machine
+Go to the Teachable Machine website: teachable machine
+• Click on the “Get Started” button.
+• Select the “Image Project” to create an image classifier.
+• Select "Standard image model"
+• For each class:
+◦ Click on the 'Add Class' button.
+◦ Upload the images pertaining to that class.
+• After adding all classes, click on the “Train Model” button.
+• Once training is complete, you can test the model right in the browser.
+• Click the "Export Model" Button
+• Navigate to the "Tensorflow Lite" tab
+• Select "EdgeTPU" if you have a Limelight Google Coral
+• Select "Quantized" if you are using a Limelight 3A for FTC or you are using CPU Neural Network
+functionality.
+• Download the model.
+Training a Custom Detector Model
+With Roboflow and the Limelight Neural Network Trainer, you can quickly train custom detector models for
+Limelight.
+Here's an overview of the steps you will need to take:
+• Collect and annotate images of objects of interest.
+◦ In this context, "annotation" is the process of drawing bounding boxes around objects of interest.
+All of this can be done within Roboflow's web interface.
+◦ Alternatively, you may select a public dataset from Roboflow Universe
+• Export the annotated dataset as a .tfrecord, upload to Google Drive, and use our free training tool
+at https://tools.limelightvision.io/neural-network-trainer
+1. Building the Dataset
+
+The Limelight Training Notebook expects a zipped .tfrecord dataset. Roboflow can export .tfrecord archives
+with one click.
+You can build your own dataset with Roboflow, or browse Roboflow Universe for pre-annotated datasets.
+If you opt to build your own dataset, read the following:
+• You should maximize the diversity of your dataset. The diversity of your dataset should exceed the
+diversity of what your Limelight will see once deployed.
+• The quality and accuracy of your dataset are of extreme importance. Make sure your bounding
+boxes are accurate and follow a single convention. For example, a partially occluded object's bounding box
+should only capture the visible part of the object.
+• Use all lowercase letters for class labels
+• Minimize the number of class labels.
+• Utilize Roboflow's augmentations, but make sure they make sense. If you are detecting red and
+blue balls, for example, make sure you are not inverting or heavily modifying hue in your augmented dataset.
+Once you have labeled or found a dataset, use Roboflow's "Download Dataset" button to export it as a
+Tensorflow TFRecord. Upload this archive to your Google Drive.
+2. Training the Model
+To train your custom detector, navigate to the Limelight Neural Network Trainer.
+Enter a link to your dataset and configure
+In google drive, make sure your dataset .tfrecord file is shared publically or with "anyone with the link". Copy
+the share link, and paste it into the trainer.
+If you want to quickly test your model, set steps to 4000. If you've tested your model and want to try to
+increase accuracy, try 20000 steps. Make sure "Limelight CPU / Google Coral" is selected if you're using
+Limelight 3A. If you're using Hailo 8 or Hailo 8L, select the appropriate platform from the dropdown menu.
+Click the "Start Training" button. The process may take up to 5 hours. Each session runs on a dedicated
+NVIDIA H100 GPU.
+Once training is complete, click the "Download" button.
+3. Uploading to Limelight
+1 Unzip the archive after downloading.
+2 FTC Teams - If you have a Limelight3A, upload the 8bit tflite model and labels.txt. You will need to
+change the runtime engine from "coral" to "cpu"
+COMPLETE FTC EXAMPLE GITHIB REPOSITORY: https://github.com/LimelightVision/limelight-examples

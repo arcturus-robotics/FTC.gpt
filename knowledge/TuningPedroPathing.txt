@@ -1,0 +1,1368 @@
+Introduction
+
+Pedro Pathing is a path following library developed to improve autonomous navigation in robotics.
+
+Pedro Pathing uses GVF-based feedforward plus feedback control, a time-independent formulation that accounts for loop-time lag, and a brake profile based on identified system dynamics for faster and more accurate autonomous routines.
+
+Using Pedro Pathing for autonomous routines provides:
+
+-Faster path execution: Driving speed and correction prioritization are optimized for speed and accuracy.
+-Correction for disturbances: The robot quickly returns to the path after disruptions.
+-Creating paths on-the-fly: Dynamic path creation enables adaptive pathing in real time.
+-Visual path generation: The visualizer allows intuitive path generation from simple lines to complex Bézier curves.
+
+Pedro Pathing is suitable for rookie teams seeking simplicity and veteran teams seeking faster autonomous routines.
+
+Check the Prerequisites and Requirements before getting started.
+
+Prerequisites and Requirements
+
+Before using Pedro Pathing, ensure the following:
+
+-Holonomic Drive: You must have a holonomic drivetrain. Pedro Pathing supports Mecanum and Swerve by default, but any holonomic drivetrain can be used.
+-Localization: The robot must know its position on the field. Supported localizers include Pinpoint, OctoQuad, OTOS, Two Wheel, Three Wheel, and Three Wheel IMU.
+-Programming Platform: You must use Android Studio. Pedro Pathing does not work with OnBot Java or Blocks.
+
+After confirming these requirements, proceed to installation.
+
+Installation
+
+There are two installation methods, Quickstart and Manual:
+
+Quickstart Installation
+
+In Android Studio, go to File -> New -> Project from Version Control.
+Enter the URL: https://github.com/Pedro-Pathing/Quickstart.git
+
+Alternatively, run:
+git clone https://github.com/Pedro-Pathing/Quickstart.git
+Ensure git is installed.
+
+Manual Installation
+
+1# Open build.dependencies.gradle and add the following to the repositories block:
+maven { url 'https://repo.dairy.foundation/releases/' }
+
+2# Add the following to the dependencies block:
+implementation 'com.pedropathing:revhub:3.0.1'
+implementation 'com.pedropathing:tuning:1.0.0'
+
+3# Perform a Gradle sync using the blue banner or the Gradle icon in Android Studio.
+
+4# Copy the files from the pedro package in the quickstart into your project.
+
+After installation, you can begin tuning.
+
+Tuning
+
+Pedro Pathing uses AutoTune, a robot-hosted webpage for tuning the drivetrain, localizer, and Foresight algorithm. Ensure Pedro Pathing is properly installed before tuning.
+
+Tuning Steps:
+
+1# Drivetrain
+Set constants for the drivetrain, including motor names and directions.
+
+2# Localization
+Tune the localizer so the robot can determine its position on the field.
+
+3# Foresight
+Tune Foresight, the built-in algorithm that enables accurate path following.
+
+Tuning Mecanum
+
+The Mecanum AutoTuner can automatically determine your MecanumConfig, which includes motor names and directions.
+
+Inside your Tuning class, add:
+
+@Tuner
+public static Procedure mecanumTuner() {
+    return new MecanumTuner();
+}
+
+Then build the code and upload it to your robot.
+
+Open AutoTune
+
+While connected to the Robot Controller, open the following address in your browser: http://192.168.43.1:10158
+
+Then, select Mecanum Procedure.
+
+Mecanum Setup
+
+Enter the HardwareMap name of each drivetrain motor according to its location on the robot.
+
+For example, if your Left Front motor's configuration name is left_front, enter:
+
+left_front
+
+in the Front Left HardwareMap Name field.
+
+After doing that to all motors, press Submit.
+
+Motor Direction Identification
+After clicking Continue, you will see a 3D diagram that shows in which direction the wheel should spin.
+
+A after pressing continue, the specified motor will start spinning. You should check whether it is going the intended direction or in the reverse direction.
+
+Select if the motor spun in the correct direction and repeat for all 4 motors.
+
+Applying the Results
+
+Once the tuner is complete, head over to the Java tab.
+
+AutoTune will generate a MecanumConfig file using the values determined during the tuning procedure.
+
+Copy the generated configuration into the MecanumConfig in your Constants.java file.
+
+At the end you should have something like this in your Constants.java:
+
+public static MecanumConfig driveConfig = new MecanumConfig(
+    c -> {
+        c.frontLeftName.set("left_front");
+        c.backLeftName.set("left_back");
+        c.frontRightName.set("right_front");
+        c.backRightName.set("right_back");
+
+        c.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+        c.backLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+        c.frontRightDirection.set(DcMotorSimple.Direction.FORWARD);
+        c.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
+    }
+);
+
+After pasting what you got from the AutoTune also add c.manualBrakeMode.set(true) for teleop usage if you want to have manual brake mode enabled.
+
+Testing Manual Control of your Drivetrain
+
+After completing the tuning steps described in your drivetrain, you can optionally test the driving capabilities of it.
+
+Make your tests method in Tuning.java use your tuned drivetrain. Your localizer and algorithm will be null.
+
+Set up your Tests method in Tuning.java
+
+@Tuner
+    public static Procedure tests() {
+        return new Tests(hardwareMap -> new Mecanum(hardwareMap, Constants.drivetrainConfig), null, null);
+    }
+
+Steps to Test
+
+1# While connected to the Robot Controller, open the following address in your browser: http://192.168.43.1:10158
+2# Select Tests Procedure and select Driving.
+3# Use your gamepad to drive the robot around.
+
+Now, you can move on to tuning your localizer constants.
+
+Localization
+
+There are many localizers for you to choose from. If you don't have any, you can use your drive motor encoders.
+
+All localizers except for the OTOS localizer use a pose exponential method of localization, a way of turning movements from the robot's coordinate frame to the global coordinate frame.
+
+Pinpoint
+
+A localizer that uses the goBILDA Pinpoint Odometry Computer
+
+Prerequisites for Pinpoint
+
+Ensure that two odometry pods are connected: one that is parallel to the length of your chassis (forward) and another that is perpendicular to the length of your chassis (lateral).
+
+Common Mistakes with Pinpoint
+
+-Make sure the pinpoint is plugged into an I2C port other than port 0. This is because the Control Hub's built in IMU uses port 0.
+-Make sure the pinpoint has the sticker side (with the ports) facing up.
+-Make sure the forward pod is plugged into the x port on the pinpoint and the strafe pod is plugged into the y port.
+
+Automatic Tuning
+
+The Pinpoint AutoTuner can automatically determine your PinpointConfig, which includes pod directions, offsets, resolution, etc.
+
+Add the Tuner
+
+Inside your Tuning class, add:
+
+@Tuner
+public static Procedure pinpointTuner() {
+    return new PinpointTuner();
+}
+
+Build and send the updated code to your Robot.
+
+Open AutoTune
+
+While connected to the Robot Controller, open the following address in your browser: http://192.168.43.1:10158
+
+Select Pinpoint Procedure.
+
+Pinpoint Setup
+
+Enter the HardwareMap name of your Pinpoint and select the odometry pod type installed on your robot.
+
+For example, if your Pinpoint is named pinpoint in your Configuration on your Driver Hub, enter:
+
+pinpoint
+
+in the HardwareMap Name field.
+
+Next, select the odometry pod type that matches the pods installed on your robot, then press Submit.
+
+Note: The Four Bar and Swing Arm pods are both goBILDA pods. If you are not using goBILDA pods, select the Custom option.
+
+Custom Resolution Identification
+
+If you are using a custom pod type, you will be prompted to run a test to determine the encoder resolution of your pods.
+
+You should input the distance in inches that your want to push your robot forward in the test. The default is 48 inches.
+
+Start the test, and then push the robot forward the distance you specified. After the robot has moved, stop the OpMode.
+
+Forward Direction Identification
+
+Press Continue, then push the robot straight forward.
+
+After moving the robot forward, stop the OpMode.
+
+The tuner will determine whether the x pod, which is the forward pod, should be set to FORWARD or REVERSED.
+
+Strafe Direction Identification
+
+Press Continue, then push the robot to the left.
+
+After moving the robot to the left, stop the OpMode.
+
+The tuner will determine whether the y pod, which is the strafe pod, should be set to FORWARD or REVERSED.
+
+Important: During the Strafe Direction Identification step, push the robot to the left.
+
+Offsets Identification
+
+Press Continue, then rotate the robot in place 180 degrees counterclockwise.
+
+After the robot has completed the rotation, stop the OpMode.
+
+The tuner will automatically calculate the x and y pod offsets.
+
+Applying the Results
+
+Once the tuner is complete, open the Java tab.
+
+AutoTune will generate a PinpointConfig using the values determined during the tuning procedure.
+
+Copy the generated configuration into the PinpointConfig in your Constants.java file.
+
+The generated configuration includes:
+
+-HardwareMap name
+-Pod type
+-X pod direction
+-Y pod direction
+-X pod offset
+-Y pod offset
+-Manual Offset Tuning
+
+Offsets can also be found manually using the diagram below. Offsets are in inches.
+
+Set your odometry pod offsets to define where they are relative to your robot's center of rotation.
+
+Testing the Localizer
+
+Once you have completed the tuning steps, you can test your localizer as described on the localization page.
+
+*image of odometry chart - https://pedropathing.com/docs/odometry-dark.png*
+
+OctoQuad
+
+A localizer that uses the Digital Chicken Labs OctoQuad MK2 sensor.
+
+Prerequisites for OctoQuad
+
+Ensure that two odometry pods are connected: one that is parallel to the length of your chassis (forward) and another that is perpendicular to your chassis length (lateral). Make sure your OctoQuad is configured to type OctoQuadFTC instead of OctoQuadFWv3.
+
+Common Mistakes with OctoQuad
+
+Make sure the OctoQuad is plugged into an I2C port other than port 0. This is because the Control Hub's built in IMU uses port 0.
+
+Automatic Tuning
+
+The OctoQuad AutoTuner can automatically determine your OctoQuadConfig, which includes pod ports, directions, offsets, resolution, etc.
+
+Add the Tuner
+
+Inside your Tuning class, add:
+
+@Tuner
+public static Procedure octoquadTuner() {
+    return new OctoQuadTuner();
+}
+
+Build and send the updated code to your Robot.
+
+Open AutoTune
+While connected to the Robot Controller, open the following address in your browser: http://192.168.43.1:10158
+
+Select OctoQuad Procedure.
+
+OctoQuad Setup
+First, enter the HardwareMap name of your OctoQuad.
+
+For example, if your OctoQuad is named octoquad in your Configuration on your Driver Hub, enter:
+
+octoquad
+
+in the HardwareMap Name field.
+
+Then, enter the ports that your forward and strafe pods are plugged into on the OctoQuad.
+
+Next, select the odometry pod type that matches the pods installed on your robot.
+
+Finally, you may either use the default i2c recovery mode (recommended), or select a different i2c recovery mode if that is desired.
+
+You may now press Submit.
+
+Note: The Four Bar and Swing Arm pods are both goBILDA pods. If you are not using goBILDA pods, select the Custom option.
+
+Heading Scalar Identification
+
+Input the number of times you wish to turn the robot. More spins will likely make this scalar more accurate to your robot, but the default number is 10.
+
+Start the test, and turn your robot exactly the number of times specified. Then stop the OpMode.
+
+Tip: Line the robot up against reference lines on the field to ensure you aren't off by a couple degrees due to human error.
+
+Custom Resolution Identification
+
+If you are using a custom pod type, you will be prompted to run a test to determine the encoder resolution of your pods.
+
+You should input the distance in inches that your want to push your robot forward in the test, the default is 48 inches.
+
+Start the test, and then push the robot forward the distance you specified. After the robot has moved, stop the OpMode.
+
+Forward Direction Identification
+
+Press Continue, then push the robot straight forward.
+
+After moving the robot forward, stop the OpMode.
+
+The tuner will determine whether the x pod, which is the forward pod, should be set to FORWARD or REVERSED.
+
+Strafe Direction Identification
+
+Press Continue, then push the robot to the left.
+
+After moving the robot to the left, stop the OpMode.
+
+The tuner will determine whether the y pod, which is the strafe pod, should be set to FORWARD or REVERSED.
+
+Important: During the Strafe Direction Identification step, push the robot to the left.
+
+Offsets Identification
+
+Press Continue, then rotate the robot in place 180 degrees counterclockwise.
+
+After the robot has completed the rotation, stop the OpMode.
+
+The tuner will automatically calculate the x and y pod offsets.
+
+Applying the Results
+
+Once the tuner is complete, open the Java tab.
+
+AutoTune will generate an OctoQuadConfig using the values determined during the tuning procedure.
+
+Copy the generated configuration into the OctoQuadConfig in your Constants.java file.
+
+The generated configuration includes:
+
+-HardwareMap name
+-Pod ports
+-Pod type
+-Heading scalar
+-i2c recovery mode
+-Pod resolutions
+-X pod direction
+-Y pod direction
+-X pod offset
+-Y pod offset
+-Manual Offset Tuning
+
+Offsets can also be found manually using the diagram below. Offsets are in inches.
+
+Set your odometry pod offsets to define where they are relative to your robot's center of rotation.
+
+*image of odometry chart - https://pedropathing.com/docs/odometry-dark.png*
+
+Testing the Localizer
+
+Once you have completed the tuning steps, you can test your localizer as described on the localization page.
+
+OTOS
+
+A localizer that uses the SparkFun Optical Tracking Odometry Sensor (OTOS).
+
+Common Mistakes with OTOS
+
+Make sure the OTOS is plugged into an I2C port other than port 0. This is because the Control Hub's built in IMU uses port 0.
+
+Automatic Tuning
+
+The OTOS AutoTuner can automatically determine your OTOSConfig, which includes the name, offsets, and scalars.
+
+Add the Tuner
+
+Inside your Tuning class, add:
+
+@Tuner
+public static Procedure otosTuner() {
+    return new OTOSTuner();
+}
+
+Build and send the updated code to your Robot.
+
+Open AutoTune
+While connected to the Robot Controller, open the following address in your browser: http://192.168.43.1:10158
+
+Select OTOS Procedure.
+
+OTOS Setup
+First, enter the HardwareMap name of your OTOS.
+
+For example, if your OTOS is named otos in your Configuration on your Driver Hub, enter:
+
+
+otos
+in the HardwareMap Name field. Then press Submit.
+
+Scalar Tuner Setup
+In the two following steps, you will first tune your OTOS's linear scalar and then its angular scalar. To set this up, first enter the distance (inches) you will push your robot and the number of times you will turn the robot.
+
+The default values are recommended: pushing the robot 48 inches and turning it 10 times.
+
+Tip
+
+For the next two steps, we recommend lining the robot up against reference lines on the field to ensure you aren't off by a couple inches degrees due to human error in your pushing or turning.
+
+Linear Scalar Identification
+Start the test, and push your robot exactly the number of inches you specified. Then stop the OpMode.
+
+Angular Scalar Identification
+Start the test, and turn your robot exactly the number of times you specified. Then stop the OpMode.
+
+Offsets Identification
+Press Continue, then rotate the robot in place 180 degrees counterclockwise.
+
+After the robot has completed the rotation, stop the OpMode.
+
+The tuner will automatically calculate the x and y pod offsets.
+
+Applying the Results
+Once the tuner is complete, open the Java tab.
+
+AutoTune will generate an OTOSConfig using the values determined during the tuning procedure.
+
+Copy the generated configuration into the OTOSConfig in your Constants.java file.
+
+The generated configuration includes:
+
+-HardwareMap name
+-Angular Scalar
+-Linear Scalar
+-X offset
+-Y offset
+-Manual Offset Tuning
+-Offsets can also be found manually using the diagram below. Offsets are in inches.
+
+Set your odometry pod offsets to define where they are relative to your robot's center of rotation.
+
+*image of odometry chart - https://pedropathing.com/docs/odometry-dark.png*
+
+Testing the Localizer
+
+Once you have completed the tuning steps, you can test your localizer as described on the localization page.
+
+Two Wheel
+
+A localizer that uses two odometry wheels and a REV Hub IMU
+
+Automatic Tuning
+
+The Two Wheel AutoTuner can automatically determine your encoder resolutions, encoder directions, and pod offsets.
+
+Add the Tuner
+
+Inside your Tuning class, add:
+
+@Tuner
+public static Procedure twoWheelTuner() {
+    return new TwoWheelTuner();
+}
+
+Make sure TwoWheelTuner is imported:
+
+import org.firstinspires.ftc.teamcode.pedro.procedures.TwoWheelTuner;
+
+Open AutoTune
+
+While connected to the Robot Controller, open the following address in your browser: http://192.168.43.1:10158
+
+Select Two Wheel Tuner.
+
+Two Wheel Setup
+
+Enter the HardwareMap name of the motor port that your forward pod encoder is connected to.
+
+For example, if the forward pod encoder is plugged into the encoder port belonging to leftFront, enter:
+
+leftFront
+
+Next, enter the HardwareMap name of the motor port that your strafe pod encoder is connected to.
+
+For example:
+
+rightRear
+
+Enter the HardwareMap name of the REV Hub IMU. This will normally be:
+
+imu
+
+Next, select the Logo Facing Direction and USB Facing Direction that match how the Control Hub is physically mounted on your robot.
+
+For example:
+
+RevHubOrientationOnRobot.LogoFacingDirection.UP
+RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+
+Then press Submit.
+
+Important
+
+The forward and strafe encoder names are the HardwareMap names of the motor ports that the odometry encoders are plugged into. They are not separate HardwareMap names for the odometry pods.
+
+Encoder Resolution Setup
+The tuner will ask for the exact distance that you will move the robot during the encoder resolution tests.
+
+The default distance is:
+
+48
+
+This value is in inches.
+
+Enter the distance you want to use, then press Submit.
+
+Tip: Measure the test distance as accurately as possible and keep the robot straight while moving it. You can also run the tests multiple times and compare the results.
+
+Forward Encoder Resolution Identification
+
+Press Continue, then push the robot straight forward by the exact distance entered during setup.
+
+For example, if the distance was set to 48 inches, push the robot forward exactly 48 inches.
+
+After moving the robot, stop the OpMode.
+
+The tuner will automatically calculate the forward encoder resolution used by:
+
+c.forwardTicksToInches.set(...);
+
+Strafe Encoder Resolution Identification
+
+Press Continue, then push the robot to the left by the exact distance entered during setup.
+
+After moving the robot to the left, stop the OpMode.
+
+The tuner will automatically calculate the strafe encoder resolution used by:
+
+c.strafeTicksToInches.set(...);
+
+Forward Direction Identification
+
+Press Continue, then push the robot straight forward.
+
+After moving the robot forward, stop the OpMode.
+
+The tuner will determine whether the x pod, which is the forward pod, should be set to FORWARD or REVERSE.
+
+The generated configuration will contain either:
+
+c.xPodDirection.set(Encoder.FORWARD);
+
+or:
+
+c.xPodDirection.set(Encoder.REVERSE);
+
+Strafe Direction Identification
+
+Press Continue, then push the robot to the left.
+
+After moving the robot to the left, stop the OpMode.
+
+The tuner will determine whether the y pod, which is the strafe pod, should be set to FORWARD or REVERSE.
+
+The generated configuration will contain either:
+
+c.yPodDirection.set(Encoder.FORWARD);
+
+or:
+
+c.yPodDirection.set(Encoder.REVERSE);
+
+Important: During the Strafe Direction Identification step, push the robot to the left. In Pedro's coordinate system, forward is +X and left is +Y.
+
+Encoder Directions
+
+The encoder direction used by Two Wheel may not match the direction used by another localizer with the same physical odometry pod.
+
+Pedro's Encoder also accounts for the direction of the DcMotorEx whose encoder port is being used. Use the direction produced by the Two Wheel tuner.
+
+Offsets Identification
+
+Press Continue, then rotate the robot in place approximately 180 degrees.
+
+Try to keep the center of the robot in approximately the same position while rotating.
+
+After the robot has completed the rotation, stop the OpMode.
+
+The tuner will automatically calculate the x and y pod offsets.
+
+Applying the Results
+
+Once the tuner is complete, open the Java tab.
+
+AutoTune will generate a complete TwoWheelConfig using the values determined during the tuning procedure.
+
+The generated configuration includes:
+
+-Forward encoder motor name
+-Strafe encoder motor name
+-IMU HardwareMap name
+-Control Hub orientation
+-Forward ticks to inches
+-Strafe ticks to inches
+-X pod direction
+-Y pod direction
+-X pod offset
+-Y pod offset
+
+Copy the generated configuration into the TwoWheelConfig in your Constants.java file.
+
+Note: Use the values generated by the tuner for your robot instead of the example values shown on this page.
+
+Manual Offset Tuning
+
+Offsets can also be found manually using the diagram below. Offsets are in inches.
+
+Set your odometry pod offsets to define where they are relative to your robot's center of rotation.
+
+*image of odometry chart - https://pedropathing.com/docs/odometry-dark.png*
+
+Testing the Localizer
+
+Once you have completed the tuning steps, you can test your localizer as described on the localization page.
+
+Three Wheel
+
+A localizer that uses three odometry wheels
+
+Prerequisites for Three Wheel
+
+Ensure that three odometry pods are connected: two parallel to the length of your chassis and one perpendicular to the chassis. The left and right pods measure forward motion, while the strafe pod measures sideways motion.
+
+The Three Wheel AutoTuner will ask for the HardwareMap name of the motor port that each odometry encoder is plugged into.
+
+The default encoder names are:
+
+-Left parallel pod: lf
+-Right parallel pod: rr
+-Strafe pod: lr
+
+The tuner also expects drive motors named lf, lr, rf, and rr to exist in the HardwareMap.
+
+Common Mistakes
+
+-Make sure the left and right pods are parallel to the robot's forward direction.
+-Make sure the strafe pod is perpendicular to the forward pods.
+-Enter the HardwareMap name of the motor port that each odometry encoder is plugged into.
+-Make sure drive motors named lf, lr, rf, and rr exist before running the tuner.
+-Move the robot by hand during every measurement. The tuner sets drive motor power to zero.
+-Complete the requested motion, stop moving, and then press Stop to save the measurement.
+-During offset and turn identification, rotate counterclockwise about the robot's center.
+-Pedro uses +X forward, +Y left, and positive heading counterclockwise.
+-Automatic Tuning
+-The Three Wheel AutoTuner can automatically determine the values needed for your ThreeWheelConfig, including encoder directions, encoder resolutions, pod offsets, and the turn multiplier.
+
+During the procedure, you will enter which motor encoder ports your odometry pods are plugged into, then move the robot by hand when AutoTune asks you to.
+
+The tuner determines:
+
+-forwardTicksToInches
+-strafeTicksToInches
+-turnTicksToRadians
+-leftEncoderDirection
+-rightEncoderDirection
+-strafeEncoderDirection
+-leftPodY
+-rightPodY
+-strafePodX
+
+How to Run the Tests
+
+For each test, press Continue, start the tuning OpMode, perform the requested motion, stop moving the robot, and then press Stop to save that measurement.
+
+Do not drive the robot with the gamepad during these tests. Move it by hand.
+
+Add the Tuner
+
+Inside your Tuning class, add:
+
+@Tuner
+public static Procedure threeWheelTuner() {
+    return new ThreeWheelTuner();
+}
+
+Make sure ThreeWheelTuner is imported:
+
+import org.firstinspires.ftc.teamcode.pedro.procedures.ThreeWheelTuner;
+
+Build and send the updated code to the Robot Controller.
+
+Open AutoTune
+
+While connected to the Robot Controller, open the following address in your browser: http://192.168.43.1:10158
+
+Select Three Wheel Tuner.
+
+Encoder Setup
+
+Enter the HardwareMap name of the motor port that each odometry encoder is plugged into.
+
+For example, if your left pod encoder is plugged into the encoder port for a motor named lf in your Robot Configuration, enter:
+
+lf
+
+in the Left Encoder Motor Name field.
+
+Do the same for the right and strafe pods.
+
+The default values are:
+
+-Left Encoder Motor Name: lf
+-Right Encoder Motor Name: rr
+-Strafe Encoder Motor Name: lr
+
+Change these names to match your robot, then press Submit.
+
+Important: Enter the HardwareMap name of the motor whose encoder port the odometry pod is plugged into.
+
+These are not separate HardwareMap names for the odometry pods.
+
+Encoder Resolution Setup
+
+Next, enter the distance in inches that you want to move the robot during the encoder resolution tests.
+
+The default is:
+
+48
+
+For example, if you leave the value at 48, you must move the robot exactly 48 inches during each resolution test.
+
+Enter the distance you want to use, then press Submit.
+
+Measurement Tip: Measure the test distance as accurately as possible. Keep the robot straight during the forward pushes and avoid turning during the strafe push. Running the tuner multiple times and comparing the generated values can help identify inconsistent measurements.
+
+Left Encoder Resolution and Direction
+
+Press Continue, then start the tuning OpMode.
+
+Push the robot straight forward by the exact distance entered during setup.
+
+For example, if the distance is 48 inches, push the robot forward exactly 48 inches.
+
+While the test is running, telemetry displays information including:
+
+-Left, right, and strafe SDK encoder ticks
+-Corrected encoder ticks
+-Localizer X and Y
+-Total heading
+-The selected pod
+-The measured movement
+
+After the robot has moved the full distance, stop moving it and press Stop.
+
+The tuner will determine the encoder resolution and direction for the left parallel pod.
+
+Right Encoder Resolution and Direction
+
+Press Continue, then start the tuning OpMode.
+
+Push the robot straight forward by the same exact distance.
+
+After the robot has moved the full distance, stop moving it and press Stop.
+
+The tuner will determine the encoder resolution and direction for the right parallel pod.
+
+The final forwardTicksToInches value is calculated using both parallel pod measurements.
+
+Strafe Encoder Resolution and Direction
+
+Press Continue, then start the tuning OpMode.
+
+Push the robot straight to the left by the exact distance entered during setup.
+
+After the robot has moved the full distance, stop moving it and press Stop.
+
+The tuner determines:
+
+c.strafeTicksToInches.set(...);
+c.strafeEncoderDirection.set(...);
+
+Coordinate Direction: Pedro uses +X forward and +Y left. During this test, move the robot to the left.
+
+Left Pod Offset Identification
+
+Press Continue, then start the tuning OpMode.
+
+Rotate the robot exactly 180 degrees counterclockwise about the robot's center of rotation.
+
+Keep the center of the robot in the same position as closely as possible.
+
+After completing the rotation, stop moving and press Stop.
+
+The tuner uses the measured parallel pod travel to calculate leftPodY.
+
+Right Pod Offset Identification
+
+Press Continue, then start the tuning OpMode.
+
+Again, rotate the robot exactly 180 degrees counterclockwise about the robot's center.
+
+After completing the rotation, stop moving and press Stop.
+
+The tuner uses the measured parallel pod travel to calculate rightPodY.
+
+Offset Validation
+
+The measured leftPodY must be greater than the measured rightPodY. If the tuner aborts at this step, verify the pod mapping and make sure both offset tests were rotated counterclockwise about the robot's center.
+
+Turn Multiplier Identification
+Press Continue, then start the tuning OpMode.
+
+Rotate the robot exactly 360 degrees counterclockwise.
+
+Use a fixed reference point so the full rotation can be measured accurately.
+
+After completing the rotation, stop moving and press Stop.
+
+The tuner calculates:
+
+c.turnTicksToRadians.set(...);
+The tuner also uses the offset-stage measurements together with the turn measurement to finish calculating:
+
+c.strafePodX.set(...);
+Applying the Results
+Once the tuner is complete, open the Java tab.
+
+AutoTune will generate a complete ThreeWheelConfig using the values determined during the tuning procedure.
+
+The generated configuration includes:
+
+-Left encoder name
+-Right encoder name
+-Strafe encoder name
+-Left pod Y offset
+-Right pod Y offset
+-Strafe pod X offset
+-Forward ticks to inches
+-Strafe ticks to inches
+-Turn ticks to radians
+-Left encoder direction
+-Right encoder direction
+-Strafe encoder direction
+
+The generated encoder names will match the HardwareMap names entered during Encoder Setup.
+
+Copy the generated configuration into the ThreeWheelConfig in your Constants.java file.
+
+Use the Generated Values
+
+Use the complete configuration generated by the tuner for your robot instead of the example values shown on this page.
+
+Manual Offset Tuning
+
+Offsets can also be found manually using the diagram below. Offsets are in inches.
+
+Set your odometry pod offsets to define where they are relative to your robot's center of rotation.
+
+*image of odometry chart - https://pedropathing.com/docs/odometry-dark.png*
+
+Testing the Localizer
+
+Once you have completed the tuning steps, test your localizer using the localization test.
+
+Move the robot forward. X should increase.
+
+Move the robot left. Y should increase.
+
+Rotate the robot counterclockwise. Heading should increase.
+
+If the reported motion does not match the physical robot motion, rerun the tuner and verify:
+
+-The encoder mapping
+-The requested push distances
+-The counterclockwise rotations
+-The generated encoder directions
+
+Three Wheel + IMU
+
+A localizer that uses three odometry wheels and an IMU
+
+Prerequisites for Three Wheel + IMU
+
+Ensure that three odometry pods are connected: two parallel to the length of your chassis and one perpendicular to the chassis. The Three Wheel + IMU AutoTuner will ask for the HardwareMap name of the motor port each encoder is plugged into, as well as the IMU HardwareMap name and Control Hub orientation.
+
+Automatic Tuning
+
+The Three Wheel + IMU AutoTuner can automatically determine the encoder resolution, encoder directions, pod offsets, and turn multiplier for your ThreeWheelIMUConfig.
+
+Add the Tuner
+
+Add the tuner to your tuning file:
+
+
+@Tuner
+public static Procedure threeWheelIMUTuner() {
+    return new ThreeWheelIMUTuner();
+}
+
+Import:
+
+import org.firstinspires.ftc.teamcode.pedro.procedures.ThreeWheelIMUTuner;
+
+Open AutoTune
+
+While connected to the Robot Controller, open the following address in your browser: http://192.168.43.1:10158
+
+Select Octoquad Procedure.
+
+Select Three Wheel + IMU Tuner.
+
+Setup
+
+The first screen asks for the three encoder motor-port names, the IMU HardwareMap name, and the Control Hub orientation.
+
+The defaults are:
+
+Left Encoder Motor Name: lf
+Right Encoder Motor Name: rr
+Strafe Encoder Motor Name: lr
+IMU HardwareMap Name: imu
+Logo Facing Direction: UP
+USB Facing Direction: BACKWARD
+Important
+
+The encoder names are the HardwareMap names of the motors whose encoder ports the odometry pods are plugged into.
+
+Choose the Logo Facing Direction and USB Facing Direction that match the physical orientation of your Control Hub.
+
+Encoder Resolution Identification
+
+Enter the exact distance, in inches, that you will move the robot during each encoder resolution test.
+
+The default is:
+
+48
+
+If you leave this at 48, move the robot exactly 48 inches during each test.
+
+Left Encoder Resolution and Direction
+
+Press Continue, start the tuning OpMode, and push the robot forward the exact distance entered above.
+
+When the movement is complete, stop the OpMode.
+
+The tuner determines the left encoder resolution and direction.
+
+Right Encoder Resolution and Direction
+
+Press Continue, start the tuning OpMode, and push the robot forward the same exact distance.
+
+When the movement is complete, stop the OpMode.
+
+The tuner determines the right encoder resolution and direction.
+
+Strafe Encoder Resolution and Direction
+
+Press Continue, start the tuning OpMode, and push the robot left the exact distance entered above.
+
+When the movement is complete, stop the OpMode.
+
+The tuner determines the strafe encoder resolution and direction.
+
+Coordinate Direction
+
+Positive X is forward, positive Y is left, and positive heading is counterclockwise.
+
+Left Pod Offset
+
+Press Continue, start the tuning OpMode, and rotate the robot exactly 180 degrees counterclockwise about the robot's center of rotation.
+
+Keep the center of the robot as fixed as possible.
+
+When the rotation is complete, stop the OpMode.
+
+Right Pod Offset
+
+Repeat the same process for the right pod.
+
+Rotate the robot exactly 180 degrees counterclockwise about the same center of rotation, then stop the OpMode.
+
+Turn Multiplier Identification
+
+Press Continue, start the tuning OpMode, and rotate the robot exactly 360 degrees counterclockwise.
+
+Use a fixed reference point to make the full rotation as accurate as possible.
+
+When the rotation is complete, stop the OpMode.
+
+Applying the Results
+
+After the tuner finishes, open the Java tab in AutoTune.
+
+The generated ThreeWheelIMUConfig includes:
+
+-Encoder HardwareMap names
+-IMU HardwareMap name
+-Control Hub orientation
+-Left, right, and strafe pod offsets
+-Forward and strafe encoder resolution
+-Turn multiplier
+-Encoder directions
+-Copy the generated configuration into Constants.java.
+
+Manual Offset Tuning
+
+Offsets can also be found manually using the diagram below. Offsets are in inches.
+
+Set your odometry pod offsets to define where they are relative to your robot's center of rotation.
+
+*image of odometry chart - https://pedropathing.com/docs/odometry-dark.png*
+
+Testing the Localizer
+After applying the generated configuration, run the localization test.
+
+Move the robot forward and verify that X increases.
+
+Move the robot left and verify that Y increases.
+
+Rotate the robot counterclockwise and verify that heading increases.
+
+Note on ESD
+
+If the robot suddenly changes heading, turns toward an incorrect angle, or develops large heading errors, the IMU may be affected by electrostatic discharge.
+
+Consider grounding the robot with a grounding strap and reviewing the FIRST documentation on ESD.
+
+If IMU interference cannot be resolved, consider using the non-IMU Three Wheel localizer instead.
+
+Troubleshooting:
+
+If localization is incorrect, check:
+
+-Encoder HardwareMap names
+-Encoder directions
+-IMU HardwareMap name
+-Logo Facing Direction
+-USB Facing Direction
+-Pod offsets
+-Encoder resolution values
+
+If you have any problems with any of the localizers, check the troubleshooting page: https://pedropathing.com/docs/pathing/guide/troubleshooting
+
+Now we can start tuning Foresight.
+
+Automatic Tuning
+
+The Foresight AutoTuner can automatically determine your ForesightConfig, which includes max achievable velocities, brake coefficients, and kP values.
+
+Add the Tuner
+
+Inside your Tuning class, add:
+
+@Tuner
+public static Procedure foresightTuner() {
+    return new ForesightTuner((hardwareMap) -> new PinpointLocalizer(hardwareMap, Constants.localizerConfig), (hardwareMap) -> new Mecanum(hardwareMap, Constants.drivetrainConfig));
+}
+
+Verify that you have the correct localizer and drivetrain set, then build/send the updated code to your Robot.
+
+Open AutoTune
+While connected to the Robot Controller, open the following address in your browser: http://192.168.43.1:10158
+
+Select Foresight Procedure.
+
+Forward Velocity Identification
+
+This will determine the maximum achievable forward velocity of your robot.
+
+It will run forward for the specified distance, then stop the OpMode. It will likely continue drifting past the distance, which is expected.
+
+Strafe Velocity Identification
+
+This will determine the maximum achievable strafe velocity of your robot.
+
+It will run left for the specified distance, then stop the OpMode. It will likely continue drifting past the distance, which is expected.
+
+Forward Deceleration Identification
+
+This will determine the natural forward deceleration of your robot.
+
+It will run forward until it reaches the specified velocity, then stop the OpMode. Usually, this will only drive a very short distance.
+
+Strafe Deceleration Identification
+
+This will determine the natural strafe deceleration of your robot.
+
+It will run left until it reaches the specified velocity, then stop the OpMode. Usually, this will only drive a very short distance.
+
+Heading Braking Identification
+
+This will determine the heading braking coefficients of your robot.
+
+It will stay in place, spinning back and forth, then will stop.
+
+Heading Tuner
+
+This will autotune the heading kP of your robot.
+
+It will stay in place, spinning the robot in a direction. After a couple of seconds, it will stop.
+
+Forward Braking Identification
+
+This will determine the forward braking coefficients of your robot.
+
+It will run forward for a specified distance, then brake.
+
+Then it will drive back to the starting position, repeating that process a few times at different powers, then will stop.
+
+Strafe Braking Identification
+
+This will determine the strafe braking coefficients of your robot.
+
+It will run left for a specified distance, then brake.
+
+Then it will drive back to the starting position, repeating that process a few times at different powers, then will stop.
+
+Forward Translational Tuner
+
+This will autotune the forward translational primary and secondary kP values of your robot.
+
+It will run forward for about 12-24 inches, then will stop.
+
+This will also determine the robot's coast and brake kV values.
+
+Strafe Translational Tuner
+
+This will autotune the strafe translational primary and secondary kP values of your robot.
+
+It will run left for about 12-24 inches, then will stop.
+
+Applying the Results
+
+Once the tuner is complete, open the Java tab.
+
+AutoTune will generate a ForesightConfig using the values determined during the tuning procedure.
+
+Copy the generated configuration into the ForesightConfig in your Constants.java file.
+
+Testing the Algorithm
+
+Once you have completed the tuning steps, you can test your Follower on the Test section.
+
+Next Steps
+
+Now, you can move on to implementing your constants into your code.
+
+Constants
+
+------
+
+After finishing the tuning process, your Constants file should have three types of constants configured.
+
+1# Foresight (Algorithm) constants contain values from the Foresight automatic tuner and Constraints.
+
+2# Drivetrain constants contain constants specific to your drivetrain type. For example, mecanum drivetrain constants contain the motor names.
+
+3# Localizer constants contain constants specific to your localizer. For example, OTOS constants include the hardware map name of the OTOS and the offset.
+
+After adding all of your constants, you need to actually use them for follower creation. For that, we have the create method that takes HardwareMap and returns a Follower.
+
+Your create function should look like this:
+
+
+public static Follower create(HardwareMap h) {
+    return new Follower(
+        new PinpointLocalizer(h, localizerConfig),
+        new Mecanum(h, drivetrainConfig),
+        new Foresight(foresightConfig)
+    );
+}
+
+Important:Ensure that the Localizer and Drivetrain that you send into the new Follower match your own.
+
+Below is an example of a complete Constants file. The different tuning pages will guide you through modifying it to suit your robot.
+
+package org.firstinspires.ftc.teamcode.pedro;
+
+import com.pedropathing.algorithm.Foresight;
+import com.pedropathing.algorithm.ForesightConfig;
+import com.pedropathing.controllers.Controller;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.math.Matrix;
+import com.pedropathing.math.Vector2D;
+import com.pedropathing.revhub.drivetrains.Mecanum;
+import com.pedropathing.revhub.drivetrains.MecanumConfig;
+import com.pedropathing.revhub.localizers.PinpointConfig;
+import com.pedropathing.revhub.localizers.PinpointLocalizer;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+public class Constants {
+    public static MecanumConfig drivetrainConfig = new MecanumConfig(
+            c -> {
+                c.frontLeftName.set("lf");
+                c.backLeftName.set("lr");
+                c.frontRightName.set("rf");
+                c.backRightName.set("rr");
+
+                c.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+                c.backLeftDirection.set(DcMotorSimple.Direction.REVERSE);
+                c.frontRightDirection.set(DcMotorSimple.Direction.FORWARD);
+                c.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
+
+                c.manualBrakeMode.set(true);
+            }
+    );
+
+    public static PinpointConfig localizerConfig = new PinpointConfig(
+            c -> {
+                c.name.set("pinpoint");
+                c.xPodOffset.set(2.187);
+                c.yPodOffset.set(-4.572);
+                c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+                c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+            }
+    );
+
+    public static ForesightConfig foresightConfig = new ForesightConfig(
+            c -> {
+                Controller primaryTranslationalForward = Controller.proportional(0.3);
+                Controller secondaryTranslationalForward = Controller.proportional(0.1);
+                Controller primaryTranslationalLateral = Controller.proportional(0.3);
+                Controller secondaryTranslationalLateral = Controller.proportional(0.1);
+
+                c.forwardTranslational.set(Controller.piecewise(secondaryTranslationalForward).put(2.5, primaryTranslationalForward));
+                c.strafeTranslational.set(Controller.piecewise(secondaryTranslationalLateral).put(2.5, primaryTranslationalLateral));
+
+                c.coast.set(Controller.proportionalFeedforward(0.010978350889324107));
+                c.brake.set(Controller.proportionalFeedforward(0.008731598255925491));
+
+                c.headingFeedback.set(Controller.proportional(5.258721785960744));
+                c.headingBrakeCoefficients.set(Vector2D.cartesian(0.05642143125655298, 0.0063829525363003695));
+
+                c.linearBrakeCoefficients.set(Matrix.diag(0.10605894992901523, 0.08719146175596092));
+                c.quadraticBrakeCoefficients.set(Matrix.diag(0.0014663966976606565, 0.0013837064502458813));
+
+                c.maxAchievableForwardVelocity.set(72.72923108818539);
+                c.maxAchievableStrafeVelocity.set(52.34323936525474);
+                c.naturalForwardDeceleration.set(85.01144677379789);
+                c.naturalStrafeDeceleration.set(104.49787535782846);
+            }
+    );
+
+    public static Follower create(HardwareMap h) {
+        return new Follower(
+            new PinpointLocalizer(h, localizerConfig),
+            new Mecanum(h, drivetrainConfig),
+            new Foresight(foresightConfig)
+        );
+    }
+}
+
+After tuning the robot, we can now test everything combined.
+
+Test
+
+Tuning Verification
+
+The Tests Procedure can be used to verify that your Follower is tuned well and working correctly.
+
+Add the Tests Procedure
+
+Inside your Tuning class, add:
+
+@Tuner
+    public static Procedure tests() {
+        return new Tests(hardwareMap -> new Mecanum(hardwareMap, Constants.drivetrainConfig), (hardwareMap -> new PinpointLocalizer(hardwareMap, Constants.localizerConfig)), () -> new Foresight(Constants.foresightConfig));
+    }
+
+Verify that you have the create method set up correctly, then build and send the updated code to your Robot.
+
+Open AutoTune
+
+While connected to the Robot Controller, open the following address in your browser: http://192.168.43.1:10158
+
+Select Tests Procedure.
+
+Localization Test
+
+This test uses your drivetrain for manual control and your localizer to track the robot's position.
+
+Driving Test
+
+This test uses your drivetrain for manual control.
+
+Pose Test
+
+This test uses your localizer to track the robot's position and will display the robot's pose on your telemetry.
+
+Hold Test
+
+This will hold the robot in place.
+
+This is useful for testing the corrective behavior of the Foresight algorithm when the robot is pushed off course.
+
+Line Test
+
+This will drive the robot forward and back in straight line distance inches away.
+
+The default is 48 inches.
+
+It will continually drive back and forth until you stop it.
+
+Curved Test
+
+This will drive the robot in a curved path: a quarter circle with tangential heading.
+
+It will loop driving the robot to an endpoint of (distance, distance), which is to the front and left of the start point, then back to the start.
+
+The default distance is 48 inches.
+
+Interpolation Test
+
+This follows the same path as the Curved Test, but it will use various interpolations.
+
+Congratulations on tuning Pedro Pathing!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

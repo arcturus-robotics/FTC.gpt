@@ -1,0 +1,249 @@
+# Source: AndyMark Docs (https://docs.andymark.com/robits-build/getting-started)
+# Subject: Robits Build - Getting Started
+# Target Competitions: FIRST Tech Challenge (FTC), RECF Achieve, RECF Inspire
+
+[OVERVIEW]
+Constructing systems for FIRST Tech Challenge, RECF Achieve, and RECF Inspire using Robits parts, starting from basic structure to mobility, prototyping, and mechanisms.
+
+[KEY TOPICS]
+- The Robits Grid: Uses straightforward hole patterns to introduce spatial thinking and variable prototyping.
+- Mobility: Focuses on building a reliable chassis, selecting appropriate motors, and choosing wheel types for field movement.
+
+[SECTION: OVERVIEW]
+The Robits building system is designed around a standardized 1/2-inch grid. This grid provides a consistent way to position structural components, mechanisms, and motion components without requiring extensive measuring or custom fabrication. The grid enables rapid iteration and experimentation because every hole along the horizontal and vertical axes aligns. Builders select components sharing the grid pattern and assemble them using standard hardware.
+
+[SECTION: SPECIFICATIONS - THE 1/2-INCH GRID]
+Robits extrusion features clearance holes for 10-32 screws spaced every 1/2 inch. These holes establish the primary Robits grid and provide mounting locations for gussets, plates, gears, shafts, standoffs, and other components. Each hole represents a 1/2-inch increment.
+
+For finer resolution, the system uses washers for spacing and gussets with slots for alignment. This allows smaller adjustments for tensioning or precise placement while remaining compatible with the overall grid system.
+
+[SECTION: DESIGNING ON THE GRID]
+When designing with Robits, builders plan in terms of grid positions rather than custom measurements:
+- 1 inch = 2 grid increments (2 grid holes)
+- 2 inches = 4 grid increments (4 grid holes)
+- 4 inches = 8 grid increments (8 grid holes)
+
+Build Process Workflow:
+1. Choose a basic structural member as the foundation for the mechanism.
+2. Determine where the mechanism needs to attach, pivot, or be supported.
+3. Select grid-compatible components (gussets, plates, beams, standoffs, carriers) for mounting locations.
+4. Attach components using 10-32 hardware.
+5. Adjust and fine-tune the assembly to fit the specific task.
+
+[SECTION: DESIGN PRINCIPLES]
+- Design around the grid whenever possible.
+- Use gussets to create rigid, repeatable joints.
+- Use spacers for fine adjustments.
+
+[SECTION: CORE KIT COMPONENTS]
+The Robits Core Kit supports iterative construction and includes tube lengths, beams, gussets, plates, carriers, shafts, gears, pulleys, belts, wheels, spacers, and standardized hardware for exploring various robot configurations.
+
+[SECTION: OVERVIEW - ROBITS STRUCTURAL TUBES]
+Tubes are the primary structural components of the Robits building system. They form the frame of the robot and provide mounting points for gussets, plates, standoffs, motion components, and hardware.
+- Material: Made from 6061 aluminum (lightweight and rigid).
+- Grid Pitch: Manufactured with holes on a standard 1/2-inch pitch grid, eliminating the need for drilling or custom modifications.
+
+[SECTION: TUBE PROFILES]
+- 0.5 x 0.5 inch Tube: Basic building block for compact and lightweight assemblies. Ideal for small metal robot structures where space and weight are critical.
+- 1 x 0.5 inch Tube: Wider profile featuring two rows of holes on the 1-inch face and one row on the 0.5-inch face. Provides stronger structural connections.
+- 1 x 1 inch Tube: Larger profile designed to integrate motion components. Features two faces with two rows of grid holes and two faces with larger bushing holes for supporting gears, pulleys, and motors directly. Used for main structural members requiring higher stiffness.
+
+[SECTION: BUILDING AND DESIGN GUIDELINES]
+- Connections: Tubes join via gussets (such as L gussets for 90-degree joints or angle gussets) while maintaining strict grid alignment.
+- Structural Frame Design: Structural frames must resist multi-directional deformation (preventing rectangular frames from shifting into parallelograms) by incorporating cross members and gussets.
+- Mechanism Tubes: Upper structural mechanisms should use lighter members (e.g., 0.5 x 0.5 inch tubes) supported by rigid chassis bases (e.g., 1 x 1 inch tubes).
+
+[SECTION: ROBITS STRUCTURAL CHANNELS]
+Channels offer open-profile structural support that allows internal access for hardware and integrated motion components.
+
+- 0.5 x 1 inch Channel: Compact channel profile providing more support than small tubing. Includes 3 mounting holes designed to attach to a SAR330 Aluminum Slide for use in the Robits Compact Linear Slide.
+- 2 x 2 inch Channel: Largest structural member in the system. The open profile allows motors, bearings, shafts, and bevel gears to mount inside (as seen in the Robits Mecanum Channel Chassis). Integrates with the 2 x 2 Robits Channel Mount for flush internal mounting and perpendicular connections.
+
+
+[SECTION: OVERVIEW]
+Gussets serve as the primary method for connecting Robits structural members, providing rigid joints and mounting points across the building system.
+
+[SECTION: TYPES OF GUSSETS & COMPONENTS]
+- Plate Gussets: Follow the standard Robits grid; useful for structural attachments and component mounting.
+- L Gussets: Designed for mounting two components at perpendicular (90-degree) angles.
+- Corner Gussets: Integrate a 90-degree orientation with additional grid mounting positions.
+- U Gussets: Fit over 0.5-inch-wide tubes to form lap joints, preventing connected components from rotating.
+- Beams: Provide lightweight connections suited for linkages and extending structural lengths.
+- Angle Gussets: Support mounting components at non-perpendicular angles, including 30°, 45°, 60°, 120°, 135°, and 150°.
+- Triangle Gussets: The largest and stiffest gusset style in the Robits ecosystem, offering maximum stability and diverse mounting configurations.
+
+[SECTION: FUNCTION AND APPLICATIONS]
+- Joint Creation: Bridges structural members (such as tubes) with multiple fastener locations so that combined parts act as a single rigid assembly.
+- Reinforcement: Adding secondary gussets or extra attachment points increases joint resistance against twisting and bending forces.
+- Dual Utility: Functions effectively as both static structural reinforcement and functional mechanism elements.
+
+[SECTION: OVERVIEW - USING THE GRID FOR MOTION]
+Motion components in the Robits building system integrate directly into the standard grid architecture, allowing builders to position and adjust drivetrains, arm assemblies, and rotating mechanisms without modifying surrounding structures.
+
+[SECTION: TUBE INTEGRATION FOR MOTION]
+- 1 x 1 Inch Robits Tube Profile: Includes bushing holes spaced at 1.5-inch intervals, providing designated mounting locations for motion components and dynamic assemblies.
+
+[SECTION: CARRIERS AND MOUNTING BRACKETS]
+- Shaft Carriers: Feature an integrated hex interface designed to transfer torque across rotating assemblies.
+- Bushing Carriers: Support hex shafts to enable low-friction rotation within structural frames.
+- Mounting Brackets: Provide interface connections between actuators (e.g., motors, servos) and standard structural members.
+
+[SECTION: SYSTEM ADVANTAGES]
+- Standardized Grid Compatibility: Enables easy relocation of pivots, gears, and supports while preserving structural alignment.
+- Key Motion Subcategories: Carriers & Mounting Brackets, Actuators, and Wheels.
+
+[SECTION: OVERVIEW - ROBITS CARRIERS]
+Robits carriers provide support and connection points for rotating mechanisms within the Robits ecosystem, categorized into bushing carriers and shaft carriers.
+
+[SECTION: CARRIER TYPES]
+- Bushing Carriers: Made of acetal material; allows a 3/8 inch hex shaft to rotate inside with low friction. Used to support long shafts or act as idler support points without transferring torque to the support structure.
+- Shaft Carriers: Rigidly engage a 3/8 inch hex shaft to transfer rotational torque through the carrier. Double end shaft carriers support and position a shaft across two structural locations.
+
+[SECTION: ROBITS MOUNTING BRACKETS]
+Designed primarily to attach FTC NeveRest motors to Robits structural components.
+
+- Side 2-Hole Motor Mount: Uses an 8-hole NeveRest mounting pattern allowing motor rotation in 45-degree increments. Features two structural mounting holes for attaching directly to Robits tubing and accommodates a 3/8 inch hex bearing.
+- Side Slotted Motor Mount: Features slotted mounting for fine positioning adjustments, enabling exact gear mesh or belt tension alignment during prototyping.
+- 80T/100T Motor Mount: Works with 1 x 1 inch Robits tubing to establish 80-tooth or 100-tooth gearbox configurations.
+  Supported gear combinations & ratios:
+  * 30T and 50T gears (1.7:1 ratio)
+  * 40T and 40T gears (1:1 ratio)
+  * 40T and 60T gears (1.5:1 ratio)
+  * 50T and 50T gears (1:1 ratio)
+  * Double Motor Mount Variant: 80T/100T Double Motor Mount handles the same gear ratios using two motors.
+
+[SECTION: BEARING MOUNTS & PASS THROUGH PLATES]
+- Single Motor Bearing Mount: Mounts a motor while holding an approximate 0.875 inch outside diameter (OD) bearing designed around 1 x 1 inch Robits tubing.
+- Pass Through Plate: Designed for the Robits Pass Through Gearbox to enable motor mounting or bearing support around 1 x 1 inch Robits tubing.
+
+[SECTION: OVERVIEW]
+Actuators power drives and mechanisms within the Robits ecosystem. Motors are generally selected for high power or continuous rotation, while servos provide controlled positioning or compact, lightweight actuation.
+
+[SECTION: MOTORS & GEAR REDUCTION]
+- Primary Motor: NeveRest Hex Gearmotors combine a motor and gearbox to balance speed and torque.
+- Gear Ratio Mechanics: Higher gear reductions yield greater output torque at lower speeds (ideal for lifting heavier loads), while lower reductions provide faster movement with lower torque.
+
+[SECTION: MOTOR OUTPUT & MOUNTING]
+- Output Shaft: Uses standard 3/8-inch hex output shafts to drive gears, wheels, pulleys, and other motion components.
+- Mounting: Integrates into Robits structures using dedicated motor mounts or gearboxes, allowing easy reconfiguration of motor placement and gearing.
+
+[SECTION: SERVOS]
+- Mounting & Adapters: Mounts directly using grid holes on the servo flange and adapts to 3/8-inch hex shafts using adapter components.
+- Control & Operation: Moves to specific commanded positions or operates within a controlled range of motion. AndyMark programmable servos can also be configured for continuous rotation mode.
+- Applications: Ideal for lightweight mechanisms and localized power, such as moving small arms, opening/closing claws, or positioning linkages far from the robot's center of gravity.
+- Included Variants: Both programmable torque and programmable speed servos are included in the Robits Core Kit.
+
+[SECTION: MOTORS VS. SERVOS COMPARISON]
+- Motors:
+  * Strengths: Continuous rotation, customizable gear ratios.
+  * Typical Uses: Drivetrains, lifts, intakes.
+- Servos:
+  * Strengths: Controlled positioning, compact size, multiple torque/speed setups.
+  * Typical Uses: Rollers, claws, linkages.
+
+[SECTION: OVERVIEW]
+Wheels dictate drivetrain movement, turning characteristics, and game piece acquisition/manipulation. All Robits-compatible wheels integrate with a standard 3/8-inch bore. The Robits Core Kit includes 3-inch Stealth Wheels, 3-inch Omni Wheels, and 2-inch Compliant Wheels.
+
+[SECTION: STEALTH WHEELS]
+- Primary Functions: Traditional tank drivetrains, launcher contact wheels, and intake mechanisms.
+- Features: Provide high traction for driving forward/backward and executing tank turns.
+- Drivetrain Application: Two 3-inch Stealth Wheels are used in the Robits Starter Drive Base.
+- Launcher Application: Combined with weighted flywheel inserts, they provide durable, slightly compliant contact points for launching rigid or squishy game elements.
+
+[SECTION: MECANUM WHEELS]
+- Primary Functions: Omnidirectional movement (strafing side-to-side, moving forward/backward without rotating).
+- Application Suitability: Best for tight or crowded fields, precise alignment, multi-angle scoring, and teams with software and maintenance experience.
+- Drivetrain Example: Forms the foundation of the Robits Mecanum Chassis.
+- Critical Setup: Rollers must form an "X" pattern across the robot when viewed from above for omnidirectional vectoring to function properly.
+
+[SECTION: OMNI WHEELS]
+- Primary Functions: Forward drive paired with low sideways friction to improve drivetrain turning ease.
+- Features: Integrated perpendicular rollers allow the wheel to slide sideways easily.
+- Drivetrain Application: Used as support wheels in tank drive bases (including the 3-inch Omni Wheels on the Robits Starter Drive Base).
+
+[SECTION: COMPLIANT WHEELS AND STARS]
+- Primary Functions: Manipulating, intaking, transferring, and launching game pieces (not for driving).
+- Features: Soft, flexible construction that deforms around objects for high-friction gripping.
+- Key Uses: Ground-level element intaking, internal object transfer, scoring ejection, and flywheel contact points.
+
+[SECTION: OVERVIEW]
+The Robits ecosystem supports constructing various styles and functions of robotics mechanisms. Building and experimenting with intermediate and expansion kits helps teams familiarize themselves with core mechanical concepts and increases design efficiency during the season. These configurations serve as introductory conceptual examples to inform custom robot designs.
+
+[SECTION: COMPETITION COMPLIANCE]
+- FIRST Tech Challenge (FTC) teams should reference rules R301 and R303 in the official Competition Manual when adapting these expansion mechanism designs.
+
+[SECTION: CORE MECHANISM CATEGORIES]
+- Structure: Structural tubing, channels, gussets, and grid-aligned framing elements.
+- Mobility: Drivetrains, wheels, motor mounts, carriers, and actuators.
+- Conveyance: Game piece handling, intake mechanisms, transfer systems, and rollers.
+- Launchers: Game piece delivery assemblies, flywheels, and weighted contact wheels.
+
+[SECTION: OVERVIEW]
+The AndyMark Robits Intermediate Structure Kit is a structural expansion kit designed for building larger and more complex robot assemblies. It provides additional aluminum tubing, gussets, plates, standoffs, spacers, threaded rods, and fasteners to complement the Robits Core Kit.
+
+[SECTION: DESIGN CONSIDERATIONS]
+- Structural Rigidity: Avoid long unsupported sections of tubing that flex under load. Improve rigidity by adding cross braces, secondary structural members, or triangular gussets.
+- Accessibility: Position fasteners so they remain reachable after full assembly, enabling easier adjustments and component replacements during testing.
+- Clearance and Range of Motion: Verify full range of motion for moving components (arms, intakes, lifts) relative to structural members prior to final assembly.
+
+[SECTION: RECOMMENDED USES]
+- Applications: Well suited for constructing towers, mechanism frames, reinforced chassis structures, and mounting systems.
+- System Integration: Pairs with the Robits Core Kit, which provides motors, drivetrain components, electronics, wheels, gears, belts, chains, and sensors.
+
+[SECTION: OVERVIEW - INTERMEDIATE MOBILITY KIT]
+The AndyMark Robits Intermediate Mobility Kit expands drivetrain capabilities beyond basic robot bases into advanced mobility setups. It includes four 4-inch ball-bearing mecanum wheels and four NeveRest Hex gearmotors with encoders, designed to pair with Robits structural components.
+
+[SECTION: DRIVETRAIN CONFIGURATIONS]
+- Horizontal Motors: Motors mount horizontally on the inside of the chassis to conserve vertical space above the drivetrain for mechanisms.
+- Vertical Motors: Motors mount vertically inside the chassis, offering flexible front-to-back positioning and opening up central space.
+- Motors Between Wheels: Motors sit between wheels using belts to transfer power, freeing up a large open interior footprint.
+- Bevel Gear Drive: Integrates bevel gears and pass-through housings to offset motor placement while efficiently transferring rotational power to wheel shafts.
+
+[SECTION: MECANUM WHEELS & OPERATION]
+- Wheel Construction: Each 4-inch wheel features a wheel plate, hub, rollers, roller bearings, and axles for smooth omnidirectional movement.
+- Wheel Alignment: Rollers across all four wheels must form an "X" pattern when viewed from above to enable correct forward, backward, diagonal, and sideways translation.
+- Implementation Note: Omnidirectional movement provides strong field navigation benefits for FIRST Tech Challenge, but requires higher maintenance and software control compared to a standard tank drive.
+
+[SECTION: OVERVIEW - ROBITS CONVEYANCE]
+Conveyance is the process of collecting, transferring, and moving game pieces within a robot (e.g., pulling objects from the floor, elevating them, or positioning them for scoring). Conveyance mechanisms utilize wheels, rollers, belts, shafts, and power transmissions.
+
+[SECTION: CONVEYANCE MECHANISM TYPES]
+- Horizontal Roller: Uses floor-parallel shafts with gears and rubber bands across its width. Best for wide intake openings and floor object collection, providing driver leeway during pickup. Testing variables include roller material, height off the floor, and backstop positioning.
+- Dual Vertical Rollers: Employs two counter-rotating rollers to grip objects from opposite sides. Ideal for precision intake of non-rolling or uniquely shaped single objects. Testing variables include roller spacing (grip/compression), roller material, and wheel diameter.
+- Single Conveyor: Uses wheels and belts to move objects across longer distances horizontally, vertically, or diagonally. Performs well with spherical objects rolling against an opposing static surface.
+- Double Conveyor: Operates two parallel conveyor systems to clamp and move objects through a mechanism. Provides precise object orientation control for odd-shaped or non-rolling items.
+
+[SECTION: TESTING AND OPTIMIZATION GUIDELINES]
+- Testing Procedure: Test mechanisms sequentially without load, with load, and while the robot is in motion.
+- Speed Standard: Intakes should operate faster than drivetrain linear speed to ensure reliable object intake while moving.
+- Failure Modes to Monitor: Game pieces sticking, motors struggling/stalling, and object misalignments during transfer.
+- Key Variables to Balance: Grip/wheel durometer, speed, torque, and compression. Always troubleshoot by adjusting only one variable at a time.
+
+[SECTION: OVERVIEW - ROBITS LAUNCHER EXPANSION KIT]
+Launching mechanisms propel scoring elements through the air toward elevated or distant targets in FIRST Tech Challenge, RECF Achieve, and RECF Engage. The Robits Launcher Expansion Kit supplements the Robits Core Kit, providing components to construct and test three primary launcher configurations: catapults, hooded flywheels, and double axle flywheels.
+
+[SECTION: CATAPULT]
+- Mechanism: Uses stored elastic energy and a cam-driven mechanism to retract and release a launching arm.
+- Features: Delivers repeatable launches across various scoring object shapes.
+- Adjustable Design Variables: Cradle shape, arm length, elastic strength, release angle, and cam position.
+
+[SECTION: HOODED FLYWHEEL]
+- Mechanism: Accelerates objects between a single rotating wheel and a curved static hood.
+- Features: Imparts rotational spin to the projectile; recommended specifically for game elements capable of rolling against a surface.
+- Adjustable Design Variables: Compression, wheel type, wheel velocity, hood wrap, and hood angle.
+
+[SECTION: DOUBLE AXLE FLYWHEEL]
+- Mechanism: Accelerates objects between two independently controlled opposing wheels in horizontal or vertical orientations.
+- Features: Equal wheel speeds minimize object spin; differing wheel speeds allow precise control over projectile rotation and trajectory.
+- Adjustable Design Variables: Compression, wheel type, and relative wheel velocity.
+
+[SECTION: LAUNCHER TESTING & OPTIMIZATION]
+- Safety & Setup: Ensure all structural and mechanical connections are tight before operating high-speed flywheel mechanisms.
+- Monitoring Parameters: Element orientation, launch accuracy/precision, motor speed drop/recovery, and catch points within the path.
+- Critical Balance Factors: Friction (compression/geometry), launch speed/distance, motor torque, and projectile spin.
+- Testing Best Practices: Modify only one major variable at a time to reliably measure distance, trajectory, spin, and repeatability.
+
+
+
+
+

@@ -1,0 +1,649 @@
+REV HARDWARE CLIENT OVERVIEW
+
+End of Life Notice
+REV Hardware Client has reached end of life and is no longer supported. Please use REV Hardware Client 2 for continued updates and support.
+
+Overview
+The REV Hardware Client (RHC) is software designed to make managing REV devices easier for the user. This Client automatically detects connected device(s), downloads the latest software for those device(s), and allows for seamless updating of the device(s).
+
+Downloads & System Requirements
+- Current Version: REV Hardware Client - Version 1.7.7
+- Offline Installers: FTC Offline Installer / Offline Installer (All available software)
+- OS Requirement: As of April 12, 2024, Windows 10 or later is required for the latest version of the REV Hardware Client. Version 1.6.4 is required for older versions of Windows.
+
+Feature Summary
+- Automatically detect supported devices when connected via USB
+- Connect a REV Control Hub via Wi-Fi
+- One-click update of all software on connected devices
+- Pre-download software updates without a connected device
+- Back up and restore user data from supported devices (REV DUO: Control Hub, REV ION: SPARK Flex & SPARK MAX)
+- Install and switch between DS and RC applications on Android Devices
+- Access the Robot Control Console on the Control Hub
+- Auto-update to the latest version of the REV Hardware Client
+- Display devices connected via RS485
+
+Supported Devices
+- REV Control Hub (REV-31-1595)
+- REV Expansion Hub (REV-31-1153)
+- REV Driver Hub (REV-31-1596)
+- REV Servo Hub (REV-11-1855)
+- Android Device via ADB
+- Generic CAN Devices
+- Legacy compatible (2025 and earlier firmware):
+  - REV SPARK Flex (REV-11-2159)
+  - REV SPARK MAX (REV-11-2158)
+  - REV Power Distribution Hub (REV-11-1850)
+  - REV Pneumatic Hub (REV-11-1852)
+
+REV HARDWARE CLIENT CHANGELOG (LEGACY)
+
+Version 1.7.7
+- Updates banner for End of Life (EOL)
+
+Version 1.7.6
+- Adds banner about REV Hardware Client 2
+
+Version 1.7.5
+- Rerelease of 1.7.4 with correct binaries
+
+Version 1.7.4
+- Corrects label for voltage ramp rate
+- Fixes overflow scrolling for certain views
+
+Version 1.7.3
+- Displays warning on Servo Hub device page when Servo Hub is in RS-485 mode
+
+Version 1.7.2
+- Adds dropdown for configuring port disabled behavior to Servo Hub hardware page
+
+Version 1.7.1
+General Improvements:
+- Fixes viewing and installing software when offline
+- Improves reliability of loading data from CAN devices
+- Adds "Forget REV USB Devices" button on the troubleshooting page to prompt for administrator privileges, clear Windows USB devices, and restart the client
+
+SPARK Improvements:
+- Fixes persisting parameters on SPARK motor controllers in follower mode
+
+Version 1.7.0
+Breaking Changes:
+- Standard installer no longer bundles device software files under 5MB (offline installers available separately)
+- Only one client instance connected to a bus can control a SPARK motor controller at a time
+- Removed "Follow SPARK Using Preset" feature in favor of simplified follower mode parameters in firmware v25+
+- Renamed "Burn Flash" button to "Persist Parameters"
+- Parameter kSensorType is no longer automatically updated when kMotorType is changed (pre-v25 firmware)
+- MAXSwerve Utility now requires SPARK firmware version 25.0.0 or later
+
+General Improvements:
+- Fixes issue where the installer could cause the computer to reboot unexpectedly
+- Improves reliability of displaying and using devices on a high-traffic CAN bus
+- Fixes CAN performance regression from 2025 beta release
+- Prevents Telemetry tab from breaking when a disconnected device is removed
+- Restricts application to only one open instance at a time
+- Fixes issue where Pneumatic Hubs and Power Distribution Hubs were disabled when commanding a SPARK motor controller to run
+
+Servo Hub & SPARK Improvements:
+- Adds support for updating, configuring, and actuating servos on Servo Hub
+- Adds support for SPARK firmware version 25
+- Improves UI for configuring closed-loop parameters (including MAXMotion parameters) on Run and Telemetry tabs
+- Fixes issue updating SPARKs over the CAN bus
+- Improves parameter organization on Advanced Tab and fault organization on Basic Tab
+
+Version 1.6.5 / 1.6.6
+Breaking Changes:
+- Windows 10 or later is now required
+
+General & Hardware Improvements:
+- Listens for safety keys (Space and Enter) to stop output even when application is unfocused
+- Improves Telemetry graph interactions, tooltips, and image export background
+- Improves setpoint slider behavior and allows typing incomplete numbers in setpoint field
+- Displays input voltage and renames "Gate Driver Fault" to "Gate Driver Fault or 12V Missing"
+- Solenoids on Pneumatic Hub turn off automatically when safety keys are pressed
+- Fixes installing firmware onto directly-connected Expansion Hubs
+
+Version 1.6.4
+- Fixes error message appearing when selected device is unplugged
+- Improves reliability of device scans, removal, and detection of new USB CAN devices
+- Adds support for public Software Channels
+- Disables Run Motor button when SPARK is under roboRIO control
+
+Version 1.6.3
+- Fixes issue where SPARK firmware update retries over CAN fail
+- Fixes SPARK Flexes disappearing immediately after firmware update over CAN
+- Fixes Recovery Mode device updates when multiple USB devices are connected
+
+Version 1.6.2
+- Prevents SPARK Flexes from being configured in Brushed mode when not connected to a SPARK Flex Dock
+- Updates support for SPARK firmware version 24.0.0
+- Improves reported NEO Vortex position accuracy
+
+Version 1.6.1
+- Fixes startup crash under specific system conditions
+
+Version 1.6.0
+- Adds support for SPARK Flex motor controller
+- Reduces update download sizes for the client
+- Respects OS proxy and certificate settings
+- Fixes bundled software copying on clean installations
+
+Version 1.5.3
+- Includes software less than 1MB in the installer and adds offline installer options
+- Application updates now apply system-wide for all users
+- Fixes SPARK MAX fault names and limit switch polarity display
+
+Version 1.5.2
+- Fixes safety issue when stopping a motor in Position or Smart Motion mode
+- Fixes inverted motor direction bug on Run tab
+- Adds MAXSwerve Drive Utility improvements (sorting, device blinking, CAN ID updates)
+
+Version 1.5.1
+- Adds MAXSwerve Drive Utility (beta) to the top-level Utilities tab
+- Increases decimal precision for Absolute Encoder zero offset value
+
+Version 1.5.0
+- Adds support for Duty Cycle Absolute Encoders, including position PID wrapping and hall sensor velocity calculation
+- Exposes additional telemetry values from the Pneumatic Hub
+- Fixes repeat firmware updates on Control and Expansion Hubs
+
+Version 1.4.0 - v1.4.3
+- Adds support for Power Distribution Hub and Pneumatic Hub
+- Fixes updating SPARKs over CAN bus
+- Adds FTC Log Viewer utility
+- Adds support for restoring Driver Hubs stuck on the REV logo
+
+Version 1.0.0 - v1.3.0
+- Initial stable release and core feature additions (SPARK MAX control, Control Hub Wi-Fi connection, telemetry graphing, and device configuration)
+
+INSTALLATION - REV HARDWARE CLIENT (LEGACY)
+
+End of Life Notice
+REV Hardware Client has reached end of life and is no longer supported. Please use REV Hardware Client 2 for continued updates and support.
+
+Latest Version
+- REV Hardware Client - Version 1.7.7
+
+System Requirements
+- Operating System: Windows 10 (64-bit) or newer
+- Processor: 64-bit
+- Legacy OS Note: As of April 12, 2024, Windows 10 or later is required for the latest version of the REV Hardware Client. Version 1.6.4 is required for older versions of Windows.
+
+Installation Instructions
+1. Download the REV Hardware Client Installer
+2. Run the Installer
+3. Run the REV Hardware Client from the Windows Start Menu or a desktop shortcut
+
+NAVIGATING THE CLIENT - REV HARDWARE CLIENT (LEGACY)
+
+Overview
+The REV Hardware Client has three tabs to manage different features of the Client:
+- Hardware Tab: Manages supported hardware devices.
+- Downloads Tab: Downloads supported device software for updating when offline.
+- About Tab: Contains information on supported devices, updating the REV Hardware Client, and issue reporting.
+
+Hardware Tab
+The Hardware Tab is where supported hardware devices are managed. When opening the REV Hardware Client, the Hardware Tab is displayed by default.
+
+No Hardware Detected:
+1. Scan for Devices - When supported REV hardware is connected to a Windows PC, the Client automatically scans for new devices. You can click Scan for Devices if the device did not automatically populate.
+2. Check for Updates - Checks for any available updates for the REV Hardware Client.
+3. Navigation - Three tabs located at the top allow navigation between features.
+
+Hardware Detected:
+Connecting supported hardware to a Windows PC with the REV Hardware Client running will automatically scan and add the devices to the Hardware Tab.
+- Supported Hardware - Each type of supported hardware will appear. Clicking on a device opens its Device Menu.
+
+Device Menu:
+1. Device Menu Tabs - Swaps between available tabs for the selected device. All devices have an Updates Tab. The Control Hub also includes a Program and Manage Tab (for the Robot Control Console) and a Backup and Restore Tab (for configuration files, Blocks, and Java code).
+2. Out of Date Warning - Displays indicators when any software component on the device is out of date.
+3. Download and Install - Buttons under each update type to download and install updates.
+4. Update All - Updates all software items for all connected devices simultaneously.
+
+Downloads Tab
+The Downloads Tab is where downloaded software files are managed. The latest software updates can be downloaded without a hardware device connected.
+1. Downloaded Update Files - View previously downloaded software versions, check release notes, or delete files from the local machine.
+2. Available Update Files - Displays the latest software versions available for download along with release notes and a download button.
+
+About Tab
+The About Tab is where the REV Hardware Client itself is managed.
+1. Check for Updates - Displays the current version of the REV Hardware Client and checks for client software updates.
+2. Supported Devices - Lists all currently supported devices for the installed version of the REV Hardware Client.
+
+TROUBLESHOOTING - REV HARDWARE CLIENT (LEGACY)
+
+Device Is Not Visible
+If you don't see all of the devices that you expect to see, follow these steps:
+- Make sure that you are connected to the Internet, so that Windows can download the necessary drivers
+- Disconnect the device from the computer and then re-connect it
+- Click the "Scan for Devices" link in the bottom-right corner of the Hardware tab
+
+Control Hubs Connected via USB
+- Make sure that the Control Hub is plugged in via USB-C, not Mini USB
+- Make sure the Control Hub has had a chance to finish starting up, and that its light is green
+- Unplug the Control Hub from the computer and plug it back in
+
+Control Hubs Connected via WiFi
+- Make sure that the Control Hub is running version 5.5 or later of the Robot Controller app
+- Make sure the Control Hub has had a chance to finish starting up, and that its light is green
+- Make sure that you are currently connected to the Control Hub's WiFi network
+- Try rebooting the Control Hub. Re-connect to its WiFi network after its light turns green
+- Plug the Control Hub in via USB instead
+
+Expansion Hubs Connected to a Control Hub
+- Make sure that the Expansion Hub is in the active configuration file
+- Make sure that the Control Hub is running version 5.5 or later of the Robot Controller app
+
+Android Phones
+- Make sure that USB debugging is enabled in the Developer Options
+  - If Developer Options is missing, enable it by tapping the Build number 7 times on the About screen in Settings
+- Unplug the phone from the computer and plug it back in, then accept the USB debugging prompt
+- Make sure that the ADB driver for your Android phone is installed (e.g., Motorola Device Manager for Motorola phones)
+
+SPARK MAX Motor Controller
+- Make sure that the SPARK MAX is not being used by another application, such as the REV SPARK MAX Client
+- Unplug the SPARK MAX from the computer and plug it back in
+
+
+CONTROL HUB - CONNECTING VIA USB (REV HARDWARE CLIENT)
+
+Steps to Connect:
+1. Power on the Control Hub by plugging the 12V Slim Battery (REV-31-1302) into the XT30 connector labeled "BATTERY" on the Control Hub.
+2. The Control Hub is ready to connect with a PC when the LED turns green. (Note: The light blinks blue every ~5 seconds to indicate that the Control Hub is healthy).
+3. Plug the Control Hub into the PC using a USB-A to USB-C Cable (REV-11-1232).
+4. Startup the REV Hardware Client. Once the Hub is fully connected, it will show up on the front page of the UI under the Hardware Tab. Select the Control Hub.
+
+UPDATING A CONTROL HUB - REV HARDWARE CLIENT (LEGACY)
+
+Update All
+Once one or more supported REV Hardware devices are connected that require updates, the Update All button will appear. Selecting Update All prompts the REV Hardware Client to confirm updates for all connected devices. Select Update to download and update all connected devices simultaneously.
+
+Individual Updates
+
+Control Hub Operating System:
+1. Select the connected Control Hub and navigate to the Update tab.
+2. Under Control Hub Operating System, select Download.
+3. Once the OS has downloaded, select Update. Keep the Control Hub powered while the upload finishes.
+4. An "Update Verification Succeeded" message will appear, followed by installation. The Control Hub will automatically reboot to complete the update.
+5. When complete, the status message will read "Operating System update complete." and status will change to "Up-to-Date."
+
+Hub Firmware:
+Note: To update firmware using the REV Hardware Client, the Robot Controller Application must first be updated to version 5.5. You may need to restart the REV Hardware Client after updating the app for the firmware update to become available.
+1. Select the connected Control Hub and navigate to the Update tab.
+2. Under Hub Firmware, select Download.
+3. Once downloaded, select Update.
+4. When complete, the status message will read "Firmware successfully updated" and status will change to "Up-to-Date."
+
+Robot Controller Application:
+1. Select the connected Control Hub and navigate to the Update tab.
+2. Under Robot Controller App, select Download.
+3. Once downloaded, select Update.
+4. When complete, the status message will read "Robot Controller app update complete." and status will change to "Up-to-Date."
+
+RESTORING CONTROL HUB DATA - REV HARDWARE CLIENT (LEGACY)
+
+Backup Files
+1. Navigate to the Backup and Restore Tab for the selected Control Hub.
+2. Select the Backup Files button.
+3. A prompt will display confirming that Configuration Files and Robot Code are backed up, and the output zip file name will be shown.
+
+Restoring Files
+1. Navigate to the Backup and Restore Tab for the selected Control Hub.
+2. Select the Restore Files button.
+3. Select the backup zip file you wish to restore in the file picker window and click Restore Files.
+4. A confirmation prompt will display once the Configuration Files and Robot Code are restored to the device.
+
+DRIVER HUB - CONNECT VIA USB-C (REV HARDWARE CLIENT)
+
+Steps to Connect:
+1. Turn on the Driver Hub.
+2. Wait for the status LED to show solid green.
+3. Plug the Driver Hub into your PC using a USB-A to USB-C Cable (REV-11-1232).
+4. Startup the REV Hardware Client. Once the Driver Hub is on and fully connected, it will show up on the front page of the UI under the Hardware Tab.
+
+Troubleshooting Note:
+If your Driver Hub is showing a battery charging symbol when plugged in via USB, it may not be able to connect to the REV Hardware Client. Please check the Driver Hub Troubleshooting documentation for help connecting.
+
+UPDATING A DRIVER HUB - REV HARDWARE CLIENT (LEGACY)
+
+Update All
+When the Driver Hub and any other supported REV Hardware devices that require updates are connected, the Update All button will appear. Once Update All is selected, the REV Hardware Client will confirm the updates for all connected devices. Select Update to download and update all devices.
+
+Individual Updates
+To install individual updates to your Driver Hub, select the Driver Hub from the list of devices on the Hardware Tab to open the Update Tab.
+
+Driver Hub Operating System
+1. After the Update Tab opens, select Download under Driver Hub Operating System (OS) to begin downloading the update.
+2. Once the OS update has downloaded, select Update.
+3. Keep the Driver Hub powered on and connected to the PC while the update finishes.
+4. When complete, a status message reading "Operating System update complete." will appear, and the status will change to "Up-to-Date."
+
+Driver Station Application
+1. Under Driver Station App on the Update tab, select Download.
+2. Once the app has downloaded, select Update.
+3. When complete, a status message reading "Driver Station App update complete." will appear, and the status will change to "Up-to-Date."
+
+UPDATING AN EXPANSION HUB - REV HARDWARE CLIENT (LEGACY)
+
+Overview
+The Expansion Hub facilitates a line of communication between a connected Robot Controller and the motors, servos, and sensors. In order to improve the quality of the Hub, REV Robotics will release firmware updates for the Expansion Hub. When a firmware release occurs, both Control Hub and Expansion Hub users will need to update their Expansion Hub firmware to the newest version.
+
+Updating Steps:
+1. Plug the Expansion Hub into a PC using a USB-A to Mini USB Cable.
+2. Startup the REV Hardware Client. Once the hub is fully connected, it will show up on the front page of the UI under the Hardware Tab. Select the Expansion Hub.
+3. After selecting the connected hardware, the Update tab will pop up. Under Hub Firmware, select Download.
+4. Once the firmware has downloaded, select Update.
+5. When the firmware update has completed, a status message "Firmware successfully updated" will display. The status for the Hub Firmware will change to "Up-to-Date."
+
+
+ANDROID DEVICES - REV HARDWARE CLIENT (LEGACY)
+
+Overview
+In order to use the REV Hardware Client with an Android device, the phone's developer settings and USB debugging options need to be turned on. Developer options are hidden by default and access methods vary by manufacturer (e.g., Motorola support documentation).
+
+Enabling Developer Options & USB Debugging
+1. Open the Android device's Settings.
+2. Scroll to the bottom of the settings to access the unlocked Developer Options and open it.
+3. Toggle the main switch at the top to ON and select 'OK' on the confirmation prompt.
+4. Scroll down to the Debugging section and toggle USB Debugging to ON.
+5. Select 'OK' on the confirmation prompt.
+
+Connecting to PC
+- Depending on the device, you may need to change the USB settings from "Charging only" to "File Transfer".
+- Plug the Android device with USB Debugging enabled into the Windows PC running the REV Hardware Client.
+
+INSTALLING RC/DS APPLICATIONS - REV HARDWARE CLIENT (LEGACY)
+
+Note
+The steps below demonstrate installing the Driver Station Application. Follow the exact same steps for installing the Robot Controller Application.
+
+Installation Steps
+1. Connect the Android Device to a PC with the REV Hardware Client installed.
+2. Launch the REV Hardware Client. Once the Android Device is fully connected, it will appear on the front page of the UI under the Hardware Tab. Select the Android Device.
+3. After selecting the device, the Update tab will open. Under Driver Station App (or Robot Controller App), select Download.
+4. Once the application has downloaded, select Install.
+5. When application installation completes, the status for the app will change to "Up-to-Date."
+
+USING THE LOG VIEWER - REV HARDWARE CLIENT (LEGACY)
+
+Overview
+Log files provide indicators of Control Hub or Expansion Hub status during system events. The REV Hardware Client Log Viewer helps parse Robot Controller, Wi-Fi, and Updater logs using filters, tags, and search functions.
+
+Accessing the Log Viewer
+1. Open the REV Hardware Client and navigate to the Utilities Tab.
+2. Select and open log files for connected devices or log files previously downloaded onto the computer.
+
+Parsing the Logs
+- Time Synchronization: Ensure the Driver Hub or Driver Station phone is set to the correct date and time before recording logs so events align accurately across log files.
+- Matches: When selecting a connected device, choose standard logs or Matches (log segments specific to an individual op mode run).
+
+Log Type Filters
+1. Errors: Triggered when system actions fail to execute (e.g., code errors, configuration/wiring issues, camera calibration failure, or OnBot Java build failures).
+2. Warnings: Non-fatal events that may cause unexpected behavior (e.g., app version mismatches or low power warnings).
+3. Info: Information on normal system milestones, such as when a program is initialized, started, or stopped.
+4. Fatal: Severe system-level failures. Frequent fatal logs warrant sending diagnostic data to REV support along with LED status descriptions.
+5. Debug: Output from SDK debugging tools (filtered out by default).
+6. Verbose: Detailed records of routine system behaviors not covered by other log types.
+
+SPARK FLEX - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Connecting via USB
+- Connect the SPARK Flex Motor Controller to your computer using a USB-C cable.
+- Launch the REV Hardware Client; it will automatically scan and connect to the SPARK Flex.
+- Additional SPARK Flex devices connected via CAN to the host device are visible when using the latest firmware.
+
+Device Tabs & Features
+
+Hardware Tab:
+Select devices connected directly via USB or through a USB-to-CAN bridge for configuration and updates.
+
+Basic Tab:
+1. Device Identify: Blinks the selected SPARK Flex's LED for identification.
+2. CAN ID: Assigns a CAN ID for communication over the CAN bus.
+3. Configurations: Select saved configurations stored on the PC or pull existing parameters stored in RAM on the SPARK Flex.
+4. Configured Parameters: Modify motor type, sensor type, idle mode behavior, and common settings. (Brushed mode requires the SPARK Flex Dock).
+
+Advanced Tab:
+- Search Parameters: Search for specific settings.
+- Parameter Table: View and edit all configurable parameters within grouped categories without writing code.
+- Note: Remember to save settings using "Persist Parameters" (formerly "Burn Flash") before disconnecting.
+
+Run Tab:
+- Run: Execute setpoints using modes like position, velocity, and duty cycle directly over USB or USB-to-CAN without needing a full control system.
+- PIDF: Update PIDF control loop parameters on the fly.
+- View Graph: Transitions to the Telemetry Tab to graph real-time signals while running the motor.
+
+Update Tab:
+- Download Latest Firmware: Saves firmware files locally on the computer.
+- Update Firmware: Installs the latest firmware onto the connected device.
+- Out-of-date Warning: Alerts when new firmware versions are available.
+
+UPDATING A SPARK FLEX - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Updating a Single SPARK Flex
+1. Connect the SPARK Flex Motor Controller to your computer using a USB-C cable.
+2. Launch the REV Hardware Client application.
+3. The Client will automatically scan and connect to the SPARK Flex. Select the device under Connected Hardware.
+4. Navigate to the Update tab.
+5. Under SPARK Flex Firmware, select Download to download the latest firmware version.
+6. Once downloaded, select Update to begin flashing the firmware.
+7. Monitor progress via the status bar; once complete, the status will display "Up-to-Date."
+
+SPARK MAX - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Connecting via USB
+- Connect your SPARK MAX Motor Controller to your computer using a USB-C cable.
+- Launch the REV Hardware Client application; it will automatically scan and connect to the SPARK MAX.
+- Additional SPARK MAX devices connected via CAN to the USB host device are visible when using the latest firmware.
+
+Device Tabs & Features
+
+Hardware Tab:
+- Select devices connected via USB or the USB-to-CAN bridge for configuration and updates.
+
+Basic Tab:
+1. Device Identify: Blinks the selected SPARK MAX's LED for identification.
+2. CAN ID: Assigns a CAN ID required for communication over the CAN bus.
+3. Configurations: Select pre-existing configurations stored on the computer or pull parameters stored in RAM on the device.
+4. Configured Parameters: Modify motor type, sensor type, idle mode behavior, and common parameters.
+
+Advanced Tab:
+- Search Parameters: Search for specific settings for editing.
+- Parameter Table: View and edit all configurable parameters within grouped categories without writing code.
+- Note: Remember to select "Persist Parameters" (formerly "Burn Flash") before disconnecting.
+
+Run Tab:
+- Run: Test setpoints (position, velocity, duty cycle) over USB or USB-to-CAN without needing a full control system.
+- PIDF: Update PIDF control loop parameters on the fly.
+- View Graph: Switches to the Telemetry Tab to graph signals in real time while running.
+
+Update Tab:
+- Download Latest Firmware: Downloads firmware files to the local machine.
+- Update Firmware: Flashes the latest firmware to the selected device.
+- Out-of-date Firmware Warning: Alerts when new firmware versions are available.
+
+UPDATING A SPARK MAX - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Updating a Single SPARK MAX
+1. Connect the SPARK MAX Motor Controller to your computer with a USB-C cable.
+2. Open the REV Hardware Client application.
+3. Select the SPARK MAX under Connected Hardware after it is automatically detected.
+4. Navigate to the Update tab.
+5. Under SPARK MAX Firmware, select Download to get the latest firmware version.
+6. Once downloaded, select Update to flash the firmware image onto the SPARK MAX.
+7. Once finished, the status will display "Up-to-Date."
+
+Note: A SPARK MAX running firmware version 1.5.0 or later can act as a USB-to-CAN Bridge. If running firmware older than version 1.4.0, you may need to unplug and replug the USB-C cable to reconnect to the Client.
+
+Updating Multiple Devices with the USB-to-CAN Bridge
+Requirements:
+- A USB-connected SPARK MAX updated to firmware version 1.5.0 or newer to act as the Bridge.
+- Other SPARK MAXs on the CAN bus individually updated to firmware version 1.4.0 or newer.
+
+Steps:
+1. Connect the Bridge SPARK MAX to the computer via USB-C with all target devices connected via CAN.
+2. Navigate to the Hardware tab in the client.
+3. Select Update All to update all out-of-date CAN-connected devices simultaneously.
+
+POWER DISTRIBUTION HUB - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Overview
+The REV Hardware Client has three tabs to manage different features of the Client:
+- Hardware Tab: Manage connected hardware devices.
+- Downloads Tab: Download supported device software for updating while offline.
+- About Tab: View supported devices, update the REV Hardware Client, and access issue reporting.
+
+Basic Tab
+- Common Parameters: Configure the primary settings for the Power Distribution Hub.
+- Sticky Faults: View and manually clear sticky faults (indicators that a fault occurred and will persist until cleared).
+
+UPDATING A POWER DISTRIBUTION HUB - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Updating Steps:
+1. Launch the REV Hardware Client.
+2. Once the Power Distribution Hub is fully connected, select it from the Hardware Tab on the main UI page.
+3. In the Update tab that appears, locate Power Distribution Hub Firmware and select Download.
+4. Once downloaded, select Update to begin flashing the firmware.
+5. When finished, an "Update Completed" status message will display, and the status will change to "Up-to-Date."
+
+PNEUMATIC HUB - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Overview
+The REV Hardware Client includes three main tabs:
+- Hardware Tab: Manage connected hardware devices.
+- Downloads Tab: Download device software for offline updating.
+- About Tab: View supported hardware, update the REV Hardware Client, and access issue reporting.
+
+Basic Tab
+- Common Parameters: Configure primary settings for the Pneumatic Hub.
+- Sticky Faults: View and manually clear sticky faults (indicators that a fault occurred and will persist until cleared).
+
+Operating Pneumatics System Without a roboRIO
+The REV Hardware Client allows full testing and operation of the pneumatic system without requiring a roboRIO or software:
+- Benchtop Testing: Test pneumatic components prior to robot integration.
+- Hardware Testing: Enable build teams to test pneumatics while software is being written.
+- Prototype Testing: Drive pneumatic actuators for quick prototypes early in the build season.
+- Telemetry & Leak Checking: Use the Telemetry Tab with an analog pressure sensor to monitor pressure loss and check for system leaks.
+
+UPDATING A PNEUMATIC HUB - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Updating Steps:
+1. Launch the REV Hardware Client.
+2. Once the Pneumatic Hub is fully connected, select it under the Hardware Tab on the main UI page.
+3. In the Update tab that appears, locate Pneumatic Hub Firmware and select Download.
+4. Once downloaded, select Update to begin flashing the firmware.
+5. When finished, an "Update Completed" status message will display, and the status for the Pneumatic Hub Firmware will change to "Up-to-Date."
+
+TELEMETRY TAB - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Supported Devices
+- SPARK MAX, SPARK Flex, Power Distribution Hub, Pneumatic Hub.
+- Attached Sensors/Inputs: NEO Vortex, NEO Brushless Motor V1.1, NEO 550, Brushed DC Motor, Through Bore Encoder, and other Data Port inputs.
+
+Key Features & Controls
+- Signals & Graph: Run setpoints (position, velocity, duty cycle), select signals, adjust time span/y-axis scales, and view real-time data.
+- PID Tuning: Update PIDF parameters on the fly to tune control loops.
+- Exporting Data: Save graphs as PNG images or export values/timestamps as .CSV files.
+- Record to .CSV: Log telemetry directly into an existing CSV file without headers.
+
+Troubleshooting & PID Setup
+- roboRIO Lockout: Connecting to a roboRIO CAN bus locks USB motor control. Disconnect from the CAN bus and power-cycle the device to restore control over USB.
+- PID Setup Guide: Set kCtrlType to Position and kFeedbackSensorPID0 to Duty Cycle under the Advanced tab, click "Persist Parameters" (formerly "Burn Flash"), and navigate to the Telemetry tab to tune gains.
+
+RUNNING MULTIPLE SPARK MOTOR CONTROLLERS - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Running One SPARK Motor Controller
+1. Connect your SPARK to the REV Hardware Client via USB-C (directly or through another device on the CAN network, such as the Power Distribution Hub). Open the Telemetry tab.
+2. Select the target device from the left panel under Connected Hardware.
+3. Select desired signals to plot (e.g., Voltage, Primary Encoder Position, Primary Encoder Velocity).
+4. Click Start Graph, configure Mode (e.g., Percent) and Setpoint (e.g., 0.05), and click Run Motor.
+
+Running Multiple SPARKs
+1. Connect all SPARK devices, updated and wired via CAN, and connect the host USB-C device (e.g., Power Distribution Hub) to the PC. Open the Telemetry tab.
+2. Select the first device and configure its signals.
+3. Click the Run Multiple tab and check the box for each additional controller you want to run simultaneously (e.g., SPARK Flex and SPARK MAX).
+4. Return to the device list, select the second controller, and choose its desired signals.
+5. Under the Run Multiple tab, select Start Graph, set Mode and Setpoint (e.g., 0.03), and click Run Motor.
+
+Safety & Troubleshooting Note
+- roboRIO Lockout: USB control is disabled if a roboRIO is detected on the CAN bus while active. To clear the lockout, power cycle the SPARK controllers after disconnecting the roboRIO
+
+
+RECOVERY MODE - REV HARDWARE CLIENT (LEGACY)
+
+Notice
+Those using REV ION products on REVLib 2026 or newer must use REV Hardware Client 2.
+
+Overview
+When updating firmware on an ION Control System Device, an interrupted transfer or bad download can cause the Status LED to remain dark or dim and the device to stop functioning. The built-in Recovery Mode forces the device to accept new firmware even if it appears bricked.
+Note: Performing this recovery erases all data and settings on the device. Remember to persist/burn desired settings to flash after recovering the device.
+
+Materials Needed
+- Small tool (e.g., a straightened paper clip or SIM card removal tool) to press the Mode Button.
+- Data-capable USB-C to USB-A cable.
+- Windows PC with the REV Hardware Client installed and updated.
+
+Recovery Steps
+1. With the device powered off, press and hold the Mode Button.
+2. While holding the Mode Button, connect the device to the PC using the USB-C cable (the Status LED will remain unlit, which is expected).
+3. With the REV Hardware Client running, wait a few seconds until the device is recognized in recovery mode, then release the Mode Button.
+4. Select the device in Recovery Mode from the REV Hardware Client window.
+5. Under "Choose a Device type", select the firmware matching the device you are recovering (ensure the correct device type is selected).
+6. Select the latest Firmware version from the dropdown menu and click Update.
+7. Wait for the update process to complete.
+8. Power cycle the device (unplug and replug the USB-C cable), click on the device icon, and clear any sticky faults.
+
+SERVO HUB - REV HARDWARE CLIENT (LEGACY)
+
+Connecting via USB
+- Connect your Servo Hub to your computer with a USB-C cable.
+- Open the REV Hardware Client application.
+- The Client will automatically scan and connect to your Servo Hub.
+
+Navigating the REV Hardware Client
+The REV Hardware Client includes four primary tabs:
+- Hardware Tab: Manage supported hardware devices.
+- Utilities Tab: View log files collected by the Control Hub or Driver Hub.
+- Downloads Tab: Download supported device software for offline updating.
+- About Tab: View supported devices, update the REV Hardware Client, and access troubleshooting information.
+
+Basic Tab
+1. CAN ID: Assigns the Servo Hub a CAN ID for identification over the CAN bus. Required for any configured Servo Hub; also serves as the Hub Address used with the Control Hub and Expansion Hub.
+2. Servo Limits: Set angular limits for each servo port. Changes are automatically saved to the Servo Hub.
+3. Disabled Behavior: Select the behavior of the Servo Hub when it is disabled through code.
+
+Servo Tab
+- Servo Controls: Run and test servos connected to the Servo Hub directly through the REV Hardware Client.
+
+Update Tab
+1. Download Latest Firmware: Downloads the latest firmware files onto the local machine.
+2. Update Firmware: Updates the selected device with the latest firmware.
+3. Out-of-date Firmware Warning: Alerts when new firmware versions are available.

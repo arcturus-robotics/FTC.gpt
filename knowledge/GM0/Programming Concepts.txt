@@ -1,0 +1,958 @@
+Programming Concepts
+
+Control Loops
+Control loops are software used to operate power transmission systems (such as a drivetrain or linear slide) in a fast and controlled fashion. Not only do control loops let you run mechanisms quickly without fear of losing control, in many cases, they help preserve the longevity of mechanisms by reducing rapid change of applied motor voltage.
+
+What is Error?
+The first thing that must be defined when discussing control loops is the concept of error.
+
+Error is defined as the difference between where you are and where you want to be. For instance, say you tell your drivetrain to drive at 30 inches per second, but in actuality, at a time, the drivetrain is driving at 28 inches per second. Since 30 - 28 = 2, the error of the drivetrain's speed at this time T is 2 inches per second. In other words, at a time t = T,
+
+e(t) = 2
+
+PID
+A PID controller (or Proportional Integral Derivative controller) is a control loop that solely uses error to control the system. PID is a form of a feedback control loop, or closed loop control. This means that data about the variable you are controlling is required in order for the loop to control that variable. In this case, information about the error of the system is required to control the system with a PID controller.
+
+The Optional Calculus
+The following equation represents the rigorous mathematical definition of the output of a PID controller f at any given time t:
+
+f(t) = K_p e(t) + K_i ∫₀ᵗ e(t) dt + K_d (de(t)/dt)
+
+where K_p, K_i, and K_d are constants and e(t), as previously mentioned, is the error in the system.
+
+If you have no experience with calculus, don't worry; while PID is fundamentally rooted in calculus, you do not need any calculus experience to be able to understand it, only basic algebra. However, you are still urged to read the rest of the section regardless of calculus experience, as the formula alone doesn't tell you why it works.
+
+Simplification of the PID formula
+Here is a simplified version of the PID formula:
+
+f(t) = K_p P(t) + K_i I(t) + K_d D(t)
+
+All we have done is simply take the full formula and replaced part of the terms with functions: P(t), I(t), and D(t).
+
+The Proportional Term
+The first component of the function, K_p P(t), is by far the most simple and easy to understand, as:
+
+P(t) = e(t)
+
+For the sake of example, let's pretend that K_i = 0 and K_d = 0 (a PID controller with only a proportional constant is known as a P controller). How will the system behave? Well, if the error is large, the output will be large. Likewise, if the error is small, the output will be small.
+
+Also, ideally, given enough time, the system always approaches its destination, assuming K_p is of the correct sign.
+
+Say we apply this to a drivetrain. You want to drive a distance D, and you decide to set your motor powers using a P controller to accomplish this. In this case, your error is how far away the robot is from the desired location. As you start to drive forward, your error is large, so you drive forward quickly, which is desirable. After all, you aren't concerned with overshooting the target yet if you are far away from it.
+
+But as the robot's distance to the target approaches 0, you will start to slow down, gaining more control over the robot. Once the error is zero, ideally, the robot will stop, and you have reached your destination. If you happen to overshoot, the error will become negative, and the robot will backtrack, repeating the process.
+
+The Derivative Term
+This term, K_d D(t), is intended to dampen the rate of change of the error. In other words, it tries to keep the error constant. How is this done?
+
+Well, for those of you with calculus under your belt,
+
+D(t) = de(t)/dt
+
+For those without calculus experience, it represents how fast the error is changing. Graphically, D(t) is simply the slope of the error at any given time t.
+
+This slope can be calculated by keeping track of the error over successive iterations of the control loop. One iteration occurs at time t_n with an error of e(t_n). At the next iteration, the time is t_(n+1) with an error of e(t_(n+1)). Thus, to find D(t), simply find the slope of e(t) given these two points.
+
+The Integral Term
+Admittedly, the integral term is the least important term for FTC® PID control loops. With a properly tuned K_p and K_d, you often can just set K_i to 0 and call it a day.
+
+However, it can still be useful in some cases. Just like the derivative term, the integral term intends to correct for overshoot. If the system thinks it reached its destination, it will stop, even when, in fact, the error is not yet 0. Perhaps the motor is no longer being supplied enough power to move. Well, given enough time, the integral term will increase the output (in this case, motor power), causing movement towards the destination.
+
+To explain without calculus, the integral term essentially sums the error over a specific interval of time. To do this, error in each loop iteration is added to a variable (in this case, I(t)).
+
+However, summing error this way has an unfortunate side effect: the longer the loop takes to complete one iteration, the more slowly this sum increases, which is obviously not desirable, as we don't want lag to affect how the robot moves. To compensate for this, before the error is added to I(t), it is multiplied by how long the previous loop took to complete, or:
+
+t_(n+1) - t_n
+
+preventing lag from making the system sum more slowly.
+
+So say the robot stops short of the target. The P and D combination aren't strong enough to move it forward to the destination. You can either tune K_p and K_d to compensate (this is recommended), or you can add the integral term to increase output (this works too, but requires more attention and tuning to achieve the same result).
+
+PID Pseudocode
+while True:
+    current_time = get_current_time()
+    current_error = desire_position-current_position
+
+    p = k_p * current_error
+
+    i += k_i * (current_error * (current_time - previous_time))
+
+    if i > max_i:
+        i = max_i
+    elif i < -max_i:
+        i = -max_i
+
+    D = k_d * (current_error - previous_error) / (current_time - previous_time)
+
+    output = p + i + d
+
+    previous_error = current_error
+    previous_time = current_time
+
+Tuning a PID Loop
+The most important thing to know while tuning a PID loop is how each of the terms affects the output. This can allow you to see which gains need to be adjusted.
+
+For example, if the target is not reached but instead the setpoint begins to oscillate around the target, it means there is not enough D gain. If the target is eventually reached, albeit very slowly, that means there is not enough P gain or the D gain is too high.
+
+In brief, the P variable drives the error towards zero, the I variable corrects for steady state error, and the D variable dampens the effects of the P variable, more so as error approaches zero, which prevents overshoot.
+
+The most common method for tuning a PID controller is as follows:
+
+Set the I and D gains to zero.
+
+Increase the P gain until there are oscillations around the target.
+
+Increase the D gain until no overshoot occurs.
+
+If there is steady state error, increase the I gain until it is corrected.
+
+An important thing to note is that most systems do not need both I and D control. Generally, systems without a lot of friction do not need an I term, but will need more D control. Systems with a lot of friction, on the other hand, generally do not need D control because the friction facilitates deceleration but need I control because the friction prevents the system from reaching the target otherwise.
+
+Built-In PID Controller
+For situations where one needs to control the velocity or position of a single motor, the built in PID controller can be used. PID can be enabled by changing the run mode to:
+
+RUN_USING_ENCODER
+
+Hint
+
+Many misunderstand the use of RUN_USING_ENCODER, many may mistake that it is necessary to use this mode for the encoders to work at all, but this is not true. Instead, RUN_USING_ENCODER enables velocity feedback using the encoder. If you are using an external PID controller such as one that you implement, generally, it is recommended that you use RUN_WITHOUT_ENCODER.
+
+For official documentation on the built in PID controller, see the REV Robotics documentation.
+
+Debugging Built-In PID Controller
+Problem	Solution
+Motor goes at Full Speed regardless of velocity setpoint	Most of the time this occurs when one of two things occurs: #1: Your encoder is not connected properly.
+
+Diagnosis: Log your encoder position to telemetry, if the position oscillates between 0 - 1 make sure you have the correct cable and it is seated correctly.
+
+#2: Your motor is going in the wrong direction.
+
+Diagnosis: Log your velocity to telemetry, if you have a positive reference velocity and the output is negative or vice versa then your motor is plugged in backwards.
+
+Problem	Solution
+Motor does not reach full speed with .setPower	Use the .setVelocity method as part of DcMotorEx or use RUN_WITHOUT_ENCODER with an external PID controller.
+
+PID Controller Sample Rate
+For teams who desire the most performance out of their PID controller, it is essential to consider the Sample rate of the controller. The Sample rate is when the controller updates its output given new sensor data. Higher Sample rates allow for more stable control and allow for the usage of more significant PID coefficients to reduce settling time.
+
+The inbuilt PID controller is locked at a 20hz refresh rate (50ms sample rate). Many top FTC teams optimize their robot loops to run at up to 80hz, achieving much more stable control with an external PID.
+
+Feedforward Control
+Feedforward control is a method of what is known as "open-loop" control. This is the opposite of closed-loop control and the primary difference is that feedforward does not actively use sensors to control the system. Instead it "predicts" the desired input based on a model.
+
+Typically feedforward is used to control either rates of change or combat known disturbances from your system.
+
+Feedforward is very powerful because it is immune to noise or other sensor errors. This is because it is not actively measuring the system, but instead predicting the desired input. However, this also means that it is not very good at correcting for errors. This is why it is often used in conjunction with a closed-loop controller such as PID.
+
+Kv Ka Feedforward Model
+The most common feedforward and the one used by libraries such as Road Runner is the Kv-Ka feedforward model:
+
+f(t) = K_v · Velocity + K_a · Acceleration
+
+Where K_v is the velocity gain, K_a is the acceleration gain, and f(t) is the feedforward output sent to your motors.
+
+These gains can be estimated by giving the controller a series of ramp inputs (such as those computed with a motion profile), measuring the output, and then changing these gains till the robot matches the desired motion.
+
+Note
+
+The gains will change based on the robot's mass, friction, and other factors. It is recommended to re-estimate these gains every time you make a significant change to your robot.
+
+Kv Ka Feedforward Pseudocode
+while True:
+    targetVelocity = getTargetVelocity(time)
+    targetAcceleration = getTargetAcceleration(time)
+    output = targetVelocity * Kv + targetAcceleration * Ka;
+
+Static Friction Feedforward
+In every system there is bound to be some amount of static Friction. This means that the robot mechanism will not move until a certain amount of power is applied. This can be modeled by adding a constant feedforward term in the direction you want to move.
+
+while True:
+    error = desire_position - current_position;
+    sign = signum(error) # sign of error, will be -1, 0, or 1
+    output = sign * staticFriction + PID(error); # PID Controller + Friction Feedforward
+
+Gravity Compensated Feedforward
+In Gravity Compensation we derive the effect of gravity upon an arm as:
+
+F_g = g cos(θ)
+
+Here we can use that with the following logic.
+
+while True:
+    error = desire_position - current_position; # no effect on gravity compensation
+    current_angle = (TICKS_AT_ZERO - current_tick) * DEGREE_PER_TICK
+    output = PID(error) + cos(radians(current_angle)) * kF
+
+This code uses a kF constant to approximate how much power the arm needs to counteract gravity. In theory, this is something related to gravity multiplied by the rotational moment of inertia of your arm. Calculating this is impractical and kF is instead found empirically.
+
+This can be done by setting the gains on the PID to 0, and increasing kF until the arm can hold itself up at any position. If your arm is still falling, increase kF, and if your arm is moving upwards, decrease kF.
+
+Motion Profiles
+Tip
+
+Motion profiles are not a specific type of control loop, but rather a technique that works well in combination with other control loops such as PID and feedforward.
+
+Motion profiling is a technique popularized in FRC® that is starting to find its way to FTC. A motion profile is a function used to change the speed of a power transmission system in a controlled and consistent way by changing desired speed gradually rather than instantaneously.
+
+Let's illustrate this with an example: say you want your drivetrain, which is initially unmoving, to drive forward at full speed. Ordinarily, you would set all drivetrain motors to full power in the code. However, this can be problematic because even though you tell the motors to move at full speed instantaneously, the drivetrain takes time to get to full speed.
+
+This can lead to uncontrolled movements which have the potential to make autonomous less consistent and, perhaps more importantly, damage mechanisms.
+
+Motion profiling attempts to solve this issue.
+
+Advantages
+More controlled and predictable movements
+
+Reduces rapid change of applied motor voltage
+
+Disadvantages
+Can be slower
+
+There are two main types of motion profiles: Trapezoidal profiles and S-Curve profiles. Trapezoidal profiles accelerate the system at a constant rate, and S-Curve profiles assume jerk (the speed acceleration changes) is constant. Given that S-Curve profiles are not optimal for controlling 2d trajectories (such as driving) and exist to reduce slippage (which usually only occurs when driving in FTC), trapezoidal profiles are recommended for most FTC applications.
+
+Trapezoidal profiles get their name from the shape of the graph of velocity over time.
+
+These are the "magic functions" for velocity and acceleration over time alluded to in the feedforward section.
+
+Here is some pseudocode for a trapezoidal profile:
+
+while True:
+    current_velocity = get_current_velocity()
+    current_time = get_current_time()
+
+    direction_multiplier = 1
+
+    if position_error < 0:
+        direction_multiplier = -1
+
+    # if maximum speed has not been reached
+    if MAXIMUM_SPEED > abs(current_velocity):
+        output_velocity = current_velocity + direction_multiplier * MAX_ACCELERATION * (current_time - previous_time)
+        output_acceleration = MAX_ACCELERATION
+
+    #if maximum speed has been reached, stay there for now
+    else:
+        outputVelocity = MAXIMUM_SPEED
+        outputAcceleration = 0
+
+    #if we are close enough to the object to begin slowing down
+    if position_error <= (output_velocity * output_velocity) / (2 * MAX_ACCELERATION)):
+        output_velocity = current_velocity - direction_multiplier * MAX_ACCELERATION * (current_time - previous_time)
+        output_acceleration = -MAX_ACCELERATION
+
+    previous_time = current_time
+
+The results of the above pseudocode are then used in a feedforward and / or PID loop to control the position of the system in a smooth and predictable way.
+
+A more advanced example of the math for motion profile generation as used in the Road Runner library can be found in the Jupyter Notebook referenced by the original page.
+
+Finite State Machines
+Finite State Machines (FSM) are often used while programming in order to allow for more complex series of actions. This is especially useful when one needs multiple tasks to run at the same time, because it allows for tasks to depend on each other's execution in a non-linear fashion.
+
+What is a Finite State Machine?
+The name of a finite state machine is very descriptive; it's a state machine, with a finite number of states. It can be in one state at a time, and can transition to a different state once something happens. The Wikipedia example of a turnstile explains the concept very well.
+
+Implementation
+Naive Implementation
+When first learning about FSMs, it is quite common for programmers to try and use them. Often times, they try to apply an FSM to their autonomous programs by segmenting their autonomous into a giant switch statement, and it often looks something like this:
+
+while (opModeIsActive()) {
+    switch (state) {
+        case DETECT_SKYSTONE:
+            // skystone detection code here
+            int position = detectSkystone();
+
+            if (position == 0) {
+                state = SKYSTONE_POS_0;
+            }
+            else if (position == 1) {
+                state = SKYSTONE_POS_1;
+            }
+            else {
+                state = SKYSTONE_POS_2;
+            }
+            break;
+
+        case SKYSTONE_POS_0:
+            // skystone position 0 here
+            doSkystone(0);
+            state = MOVE_FOUNDATION;
+            break;
+
+        case SKYSTONE_POS_1:
+        case SKYSTONE_POS_2:
+            // etc etc
+            break;
+
+        case MOVE_FOUNDATION:
+            // foundation move code
+            state = PARK;
+            break;
+
+        case PARK:
+            // park the bot
+            break;
+    }
+}
+
+This however does not really have any benefits compared to if the programmer had simply put each of the code's segments into functions, and executed them in order.
+
+In fact, often times, programmers will structure their code like this instead of splitting their code up into functions. The result is an autonomous that's more difficult to debug, and ultimately harder to fix on the fly during a competition or other time crunch.
+
+If one drew out the state transition diagram for each of the states, for the autonomous above it'd be very linear, and the state transitions always occur because the section of the code finished:
+
+Detect Skystone
+    |
+    +----> Skystone Position 0 ----+
+    |                              |
+    +----> Skystone Position 1 ----+----> Foundation Move ----> Park
+    |                              |
+    +----> Skystone Position 2 ----+
+
+In fact, in many implementations, making state transitions for any other reason is often difficult because the code executes linearly and is only in a loop to rerun the switch statements. (Often times, this means the code has a hard time reacting to a stop request in the middle of autonomous.)
+
+Warning
+
+It is unadvisable to write code like this. If your autonomous is synchronous, it is preferable to split your code up into functions and run them in order, as this will be easier to understand and edit on the fly.
+
+Useful Implementation
+FSMs are the right tool to use when a robot needs to complete multiple tasks at once; a common example of this is when a robot should have automation in teleop, but still have control over the drivetrain.
+
+Often times, teams have issues because their teleop executes in a loop and their servo logic has sleeps in it. But, we can avoid this if we write code in an asynchronous fashion - where instead of waiting for a task to complete before doing the next one, tasks are performed at the same time, and each task's state is checked without stopping the other tasks from executing.
+
+An example of this would be that if one had a robot similar to Gluten Free's Rover Ruckus Robot, and one wanted to automate the scoring lift so that the drivers don't have to think while the bot deposits the minerals.
+
+There are two parts of the bot that are relevant to us in this exercise:
+
+The angled scoring lift
+
+The servo that tips the dumper so the minerals fall out
+
+The goal is to be able to push a button, and then the bot will:
+
+Extend the lift
+
+At full lift extension, angle the mineral bucket servo to deposit the minerals
+
+Wait for the minerals to fall out
+
+Reset the servo to the original position
+
+Retract the lift
+
+If the drivers press a specific other button, we will stop executing the actions above as a failsafe - in case the robot is breaking somehow and the drivers need to take manual control.
+
+All the while, the drivers should still be able to control our drivetrain so we can make adjustments.
+
+Now, of course, this is a bit simplified (and probably not entirely what GF did), but it will do for now.
+
+Before anything is programmed, it may be useful draw out the state diagram for this to get a better understanding of what we the robot should actually be doing. This can also add to a Control Award submission.
+
+State diagram
+                         +----------------+
+                         |      Start     |
+                         +----------------+
+                           | X Pressed
+                           v
+                    +----------------+
+                    |  Extend Lift   |
+                    +----------------+
+                     |              |
+                     | Lift Fully   | Y Pressed
+                     | Extended      |
+                     v              |
+              +----------------+    |
+              | Set Servo Dump |----+
+              +----------------+
+                |             |
+                | Minerals    | Y Pressed
+                | be Dumped   |
+                v             |
+        +-------------------------+
+        | Reset Servo, Retract    |
+        | Lift                    |
+        +-------------------------+
+                | Lift Fully
+                | Retracted /
+                | Y Pressed
+                v
+             +-------+
+             | Start |
+             +-------+
+
+The actual transitions are:
+
+Start
+  -- X Pressed --> Extend Lift
+
+Extend Lift
+  -- Lift Fully Extended --> Set Servo Dump
+  -- Y Pressed ------------> Start
+
+Set Servo Dump
+  -- Minerals be Dumped --> Reset Servo, Retract Lift
+  -- Y Pressed ----------> Start
+
+Reset Servo, Retract Lift
+  -- Lift Fully Retracted / Y Pressed --> Start
+
+Notice how resetting the dump servo and retracting the lift share a state. That's because the robot doesn't need to wait for the servo to reset before moving the lift down; they can both happen at once.
+
+Now, let's get into actually implementing the code for this.
+
+In a traditional OpMode, which is commonly used for teleop, code runs repeatedly in a loop() function, so instead of waiting for a state transition to happen directly, the code will repeatedly check on each loop() call if it should perform a state transition.
+
+This kind of “update our state” pattern keeps code from blocking the rest of the loop() code from running, such as the drivetrain.
+
+/*
+ * Some declarations that are boilerplate are
+ * skipped for the sake of brevity.
+ * Since there are no real values to use, named constants will be used.
+ */
+
+@TeleOp(name="FSM Example")
+public class FSMExample extends OpMode {
+    // An Enum is used to represent lift states.
+    // (This is one thing enums are designed to do)
+    public enum LiftState {
+        LIFT_START,
+        LIFT_EXTEND,
+        LIFT_DUMP,
+        LIFT_RETRACT
+    };
+
+    // The liftState variable is declared out here
+    // so its value persists between loop() calls
+    LiftState liftState = LiftState.LIFT_START;
+
+    // Some hardware access boilerplate; these would be initialized in init()
+    // the lift motor, it's in RUN_TO_POSITION mode
+    public DcMotorEx liftMotor;
+
+    // the dump servo
+    public Servo liftDump;
+
+    // used with the dump servo, this will get covered in a bit
+    ElapsedTime liftTimer = new ElapsedTime();
+
+    final double DUMP_IDLE; // the idle position for the dump servo
+    final double DUMP_DEPOSIT; // the dumping position for the dump servo
+
+    // the amount of time the dump servo takes to activate in seconds
+    final double DUMP_TIME;
+
+    final int LIFT_LOW; // the low encoder position for the lift
+    final int LIFT_HIGH; // the high encoder position for the lift
+
+    public void init() {
+        liftTimer.reset();
+
+        // hardware initialization code goes here
+        // this needs to correspond with the configuration used
+        liftMotor = hardwareMap.get(DcMotorEx.class, "liftMotor");
+        liftDump = hardwareMap.get(Servo.class, "liftDump");
+
+        liftMotor.setTargetPosition(LIFT_LOW);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void loop() {
+        liftMotor.setPower(1.0);
+
+        switch (liftState) {
+            case LIFT_START:
+                // Waiting for some input
+                if (gamepad1.x) {
+                    // x is pressed, start extending
+                    liftMotor.setTargetPosition(LIFT_HIGH);
+                    liftState = LiftState.LIFT_EXTEND;
+                }
+                break;
+
+            case LIFT_EXTEND:
+                // check if the lift has finished extending,
+                // otherwise do nothing.
+                if (Math.abs(liftMotor.getCurrentPosition() - LIFT_HIGH) < 10) {
+                    // our threshold is within
+                    // 10 encoder ticks of our target.
+                    // this is pretty arbitrary, and would have to be
+                    // tweaked for each robot.
+
+                    // set the lift dump to dump
+                    liftDump.setTargetPosition(DUMP_DEPOSIT);
+                    liftTimer.reset();
+                    liftState = LiftState.LIFT_DUMP;
+                }
+                break;
+
+            case LIFT_DUMP:
+                if (liftTimer.seconds() >= DUMP_TIME) {
+                    // The robot waited long enough, time to start
+                    // retracting the lift
+                    liftDump.setTargetPosition(DUMP_IDLE);
+                    liftMotor.setTargetPosition(LIFT_LOW);
+                    liftState = LiftState.LIFT_RETRACT;
+                }
+                break;
+
+            case LIFT_RETRACT:
+                if (Math.abs(liftMotor.getCurrentPosition() - LIFT_LOW) < 10) {
+                    liftState = LiftState.LIFT_START;
+                }
+                break;
+
+            default:
+                // should never be reached, as liftState should never be null
+                liftState = LiftState.LIFT_START;
+        }
+
+        // small optimization, instead of repeating ourselves in each
+        // lift state case besides LIFT_START for the cancel action,
+        // it's just handled here
+        if (gamepad1.y && liftState != LiftState.LIFT_START) {
+            liftState = LiftState.LIFT_START;
+        }
+
+        // mecanum drive code goes here
+        // But since none of the stuff in the switch case stops
+        // the robot, this will always run!
+        updateDrive(gamepad1, gamepad2);
+    }
+}
+
+Kinematics
+Kinematics is the application of geometry to the control of various robot mechanisms. Kinematics equations are used to control mechanisms by providing specific inputs to achieve a desired output.
+
+Many of the kinematics equations here were taken from Controls Engineering in the FIRST Robotics Competition and Mobile Robot Kinematics for FTC, which contain the relevant derivations. While only tank (differential drive) and mecanum kinematics equations are shown here, these sources also contain derivations for other mechanisms such as swerve and dead wheel odometry.
+
+Forward vs Inverse Kinematics
+Mechanisms may have different sets of equations for their forward and inverse kinematics.
+
+Forward kinematics are the equations used to determine the state of a system given the state of its outputs.
+
+Inverse kinematics determines the output of a system given the desired state.
+
+For example, in a drivetrain:
+
+Forward kinematics determines the robot's body velocity based on the individual velocities of the wheels.
+
+Inverse kinematics determines the required wheel velocities for a desired body velocity.
+
+Tank (Differential Drive)
+A tank, or differential drive, is a drivetrain consisting of two sets of wheels on either side of the robot that are independently driven.
+
+Variables
+v_r = linear velocity of the right wheel(s)
+
+v_l = linear velocity of the left wheel(s)
+
+v_f = forward velocity of the robot, relative to itself
+
+ω = rotational velocity of the robot in radians/second
+
+r_b = base track radius
+    = distance between the wheel and center of the robot
+    = half the distance between wheels
+
+These variables, with the exception of ω, represent linear velocities, NOT rotational velocities.
+
+Wheel rotational velocity in radians/second can be converted to linear velocity by multiplying by the wheel's radius.
+
+Positive rotational velocity (ω) will spin the robot COUNTERCLOCKWISE when viewed from above.
+
+Forward Kinematics
+The forward kinematics of a tank drive relate the velocity of the wheels to the forward and rotational velocities of the robot, relative to itself.
+
+v_f = (v_r + v_l) / 2
+
+ω = (v_r - v_l) / (2r_b)
+
+Inverse Kinematics
+The inverse kinematics of a tank drive relate the desired velocity of the robot to the velocity required of the wheels.
+
+v_r = v_f + r_d · ω
+
+v_l = v_f - r_d · ω
+
+Mecanum Drive
+Mecanum kinematics uses the same variables as differential drive, except with four wheel velocity variables and an additional robot velocity vector for the left-to-right velocity.
+
+Variables
+v_fr = linear velocity of the front right wheel
+
+v_br = linear velocity of the back right wheel
+
+v_fl = linear velocity of the front left wheel
+
+v_bl = linear velocity of the back left wheel
+
+v_f = forward velocity of the robot, relative to itself
+
+v_s = strafe (sideways) velocity of the robot, relative to itself
+
+ω = rotational velocity of the robot in radians/second
+
+r_b = base track radius
+    = distance between the wheel and center of the robot
+    = half the distance between wheels
+
+Again, with the exception of ω, these represent linear velocities, not rotational velocities.
+
+Positive ω spins the robot COUNTERCLOCKWISE when viewed from above.
+
+Forward Kinematics
+v_f = (v_fr + v_fl + v_br + v_bl) / 4
+
+v_s = (v_bl + v_fr - v_fl - v_br) / 4
+
+ω = (v_br + v_fr - v_fl - v_bl) / (4 · 2r_b)
+
+Inverse Kinematics
+v_fl = v_f - v_s - (2r_b · ω)
+
+v_bl = v_f + v_s - (2r_b · ω)
+
+v_br = v_f - v_s + (2r_b · ω)
+
+v_fr = v_f + v_s + (2r_b · ω)
+
+Manipulators
+Gravity Compensation
+Often in FTC, teams have arms that swing out around an axis. Controlling these arms requires some thought because, depending on the angle they're at, the effect of gravity drastically changes.
+
+The first step is defining a reference frame.
+
+GM0 recommends defining zero as straight to the side, as this is when gravity has the greatest effect on the arm. Other reference frames will still work, but the exact trigonometry will change.
+
+In this reference frame, the relative force of gravity is equal to the cosine of the angle.
+
+F_g = g cos(θ)
+
+This makes sense because:
+
+cos(0°)  = 1
+cos(90°) = 0
+
+So gravity has its maximum effect at 0° and no effect at 90°.
+
+Assuming you have an encoder on your arm, you can find θ (the angle of the arm relative to the vertical) using:
+
+current_angle = (TICKS_AT_ZERO - current_tick) * DEGREE_PER_TICK
+
+Calculating DEGREE_PER_TICK
+DEGREE_PER_TICK = 360 / encoder_resolution / gear_ratio
+
+For example, for a 19.2:1 goBILDA Yellow Jacket:
+
+encoder resolution = 537.7 ticks/revolution
+
+DEGREE_PER_TICK = 360 / 537.7
+
+If there was a 2:1 gear ratio after the gearbox:
+
+DEGREE_PER_TICK = 360 / (2 * 537.7)
+
+The typical way to utilize gravity compensation is to pass it in as a feedforward parameter to a PID controller. 
+G
+Game Manual 0
+
+Odometry
+Odometry is a form of localization that uses data from sensors such as encoders to derive an estimated position relative to a starting point.
+
+Localization is a means of locating the robot at some point in time.
+
+Odometry is especially useful in autonomous programs because it makes it easier to implement different tasks on the field because the robot understands its position. 
+G
+Game Manual 0
+
+Pose
+A pose is the position of some body, normally in two-dimensional space.
+
+A robot's pose contains:
+
+x = position in the x direction
+
+y = position in the y direction
+
+θ = heading
+
+So the pose can be represented as:
+
+        [ x ]
+x⃗  =    [ y ]
+        [ θ ]
+
+A heading is the direction toward which the front of the robot is facing.
+
+The robot's coordinate frame is set up so that the global x-axis is lined up with the 0 heading.
+
+The current pose can therefore be written as:
+
+        [ x₀ ]
+x⃗₀ =    [ y₀ ]
+        [ θ₀ ]
+
+This represents a point on the field (x₀, y₀) with a specified orientation θ₀.
+
+A pose generally has some beginning origin in the coordinate frame.
+
+Updating the Pose
+The change in pose over a very small amount of time is:
+
+Δx⃗
+
+The difference in time between the current pose and the last pose should be as small as possible to improve the mathematical approximation.
+
+Teams should update their robot pose every cycle of their control loop.
+
+Updating the pose is essentially adding the transformed change to the previous pose.
+
+Let:
+
+φ = Δθ
+
+Then:
+
+[ x ]   [ x₀ ]   [ Δx ]
+[ y ] = [ y₀ ] + [ Δy ]
+[ θ ]   [ θ₀ ]   [ φ  ]
+
+The basic idea of odometry is:
+
+sensor data
+     ↓
+mathematical calculations
+     ↓
+approximate robot movement
+     ↓
+updated robot pose
+
+Finding the Change in Position
+To determine the current location of the robot and update its pose, the change must be calculated using sensor data.
+
+For a three-wheel odometry setup, there are three sensors:
+
+left sensor      → parallel to robot's x direction
+
+right sensor     → parallel to robot's x direction
+
+perpendicular sensor → perpendicular to the drive wheels
+
+The two parallel sensors measure forward/backward movement.
+
+The perpendicular sensor measures sideways movement.
+
+Angle and Displacement
+The displacement of the left sensor is:
+
+Δx_l
+
+The displacement of the right sensor is:
+
+Δx_r
+
+The lateral distance between the two parallel sensors is called the trackwidth:
+
+L
+
+The trackwidth is very important for determining the angle during turning.
+
+This value needs to be tuned — repeatedly tested and adjusted until the measured behavior converges toward the correct value.
+
+Calculating Heading Change
+The change in heading is:
+
+φ = (Δx_l - Δx_r) / L
+
+Center Displacement
+To perform the later calculations, we need the displacement of the robot in the x-direction relative to its center instead of the two individual sensors.
+
+We take the average of the two parallel sensors:
+
+Δx_c = (Δx_l + Δx_r) / 2
+
+where:
+
+Δx_c = center displacement
+
+Perpendicular Displacement
+The perpendicular sensor's displacement is:
+
+Δx_h
+
+However, this needs to be corrected for the sensor's forward offset.
+
+Let:
+
+F = forward offset
+
+The offset needs to be considered because the perpendicular sensor isn't necessarily located at the robot's center.
+
+If the sensor is closer to the back:
+
+F < 0
+
+If the sensor is closer to the front:
+
+F > 0
+
+This accounts for the change in the sensor's position during point turns.
+
+Therefore:
+
+Δx_⊥ = Δx_h - (F · φ)
+
+If you don't have perpendicular sensors, and your robot cannot move laterally, then:
+
+Δx_⊥
+
+is not necessary.
+
+Euler Integration
+This method of approximating position is known as Euler integration, although it is being used here for strict pose deltas rather than integrating velocity.
+
+In other words, this is essentially a simplified version of the original theory.
+
+Odometry Pseudocode
+while robot_is_active():
+    delta_left_encoder_pos = left_encoder_pos - prev_left_encoder_pos
+    delta_right_encoder_pos = right_encoder_pos - prev_right_encoder_pos
+    delta_center_encoder_pos = center_encoder_pos - prev_center_encoder_pos
+
+    phi = (delta_left_encoder_pos - delta_right_encoder_pos) / trackwidth
+
+    delta_middle_pos = (delta_left_encoder_pos + delta_right_encoder_pos) / 2
+
+    delta_perp_pos = delta_center_encoder_pos - forward_offset * phi
+
+    delta_x = delta_middle_pos * cos(heading) - delta_perp_pos * sin(heading)
+
+    delta_y = delta_middle_pos * sin(heading) + delta_perp_pos * cos(heading)
+
+    x_pos += delta_x
+    y_pos += delta_y
+    heading += phi
+
+    prev_left_encoder_pos = left_encoder_pos
+    prev_right_encoder_pos = right_encoder_pos
+    prev_center_encoder_pos = center_encoder_pos
+
+Using Pose Exponentials
+This method uses differential equations to solve for the nonlinear position of the robot given constant curvature.
+
+Euler integration assumes that the robot follows a straight path between updates. This can lead to inaccurate approximations when traveling around curves.
+
+The more advanced method applies a correction for this nonlinear curvature to the Euler-integration robot-relative deltas.
+
+The complete equation is:
+
+              [ Δx ]       [ cos(θ₀)  -sin(θ₀)  0 ]   [ sin(φ)/φ       (cos(φ)-1)/φ   0 ]   [ Δx_c ]
+              [ Δy ]   =   [ sin(θ₀)   cos(θ₀)  0 ] · [ (1-cos(φ))/φ   sin(φ)/φ       0 ] · [ Δx_⊥ ]
+              [ φ  ]       [    0          0     1 ]   [ 0               0             1 ]   [ φ    ]
+
+Or, in LaTeX:
+
+\begin{split}
+\begin{pmatrix}
+\Delta x \\
+\Delta y \\
+\varphi
+\end{pmatrix}
+=
+\begin{pmatrix}
+\cos(\theta_0)&-\sin(\theta_0)&0\\
+\sin(\theta_0)&\cos(\theta_0)&0\\
+0&0&1
+\end{pmatrix}
+\begin{pmatrix}
+\frac{\sin(\varphi)}{\varphi}&
+\frac{\cos(\varphi)-1}{\varphi}&0\\
+\frac{1-\cos(\varphi)}{\varphi}&
+\frac{\sin(\varphi)}{\varphi}&0\\
+0&0&1
+\end{pmatrix}
+\begin{pmatrix}
+\Delta x_c\\
+\Delta x_\perp\\
+\varphi
+\end{pmatrix}
+\end{split}
+
+The key distinction is:
+
+Euler integration
+    ↓
+assumes straight-line motion between updates
+
+Pose exponential
+    ↓
+accounts for the robot following a curved path
+
+GM0 describes the pose-exponential approach as a more accurate method for curved motion. 
+G
+Game Manual 0
+
+Quick formula sheet
+If you're putting this into notes, these are the formulas I'd keep together:
+
+========================
+TANK KINEMATICS
+========================
+
+v_f = (v_r + v_l) / 2
+
+ω = (v_r - v_l) / (2r_b)
+
+v_r = v_f + r_b · ω
+
+v_l = v_f - r_b · ω
+
+
+========================
+MECANUM KINEMATICS
+========================
+
+v_f = (v_fr + v_fl + v_br + v_bl) / 4
+
+v_s = (v_bl + v_fr - v_fl - v_br) / 4
+
+ω = (v_br + v_fr - v_fl - v_bl) / (4 · 2r_b)
+
+v_fl = v_f - v_s - (2r_b · ω)
+
+v_bl = v_f + v_s - (2r_b · ω)
+
+v_br = v_f - v_s + (2r_b · ω)
+
+v_fr = v_f + v_s + (2r_b · ω)
+
+
+========================
+GRAVITY COMPENSATION
+========================
+
+F_g = g cos(θ)
+
+current_angle =
+    (TICKS_AT_ZERO - current_tick) * DEGREE_PER_TICK
+
+
+========================
+ODOMETRY
+========================
+
+φ = (Δx_l - Δx_r) / L
+
+Δx_c = (Δx_l + Δx_r) / 2
+
+Δx_⊥ = Δx_h - (F · φ)
+
+Δx = Δx_c cos(heading) - Δx_⊥ sin(heading)
+
+Δy = Δx_c sin(heading) + Δx_⊥ cos(heading)
+
+x_pos += Δx
+
+y_pos += Δy
+
+heading += φ

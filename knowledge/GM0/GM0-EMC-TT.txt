@@ -1,0 +1,14 @@
+Tips and Tricks
+In addition to what is written in the official resources, there are a couple of additional tips.
+
+The traditional XT30 connector that is used to REV is prone to breaking. It is highly recommended that teams replace XT30 connectors with Anderson PowerPole, or put adapters on their current wires. An example of an adapter is this. In lieu of this, teams can also 3D print strain relief connectors on the Expansion Hub to prevent XT30 disconnects. The file can be found on Thingiverse or through this link.
+
+An example Anderson Powerpole to XT30 adapter
+An example Anderson PowerPole (A) to XT30 (B) adapter. They can be found at ServoCity or REV Robotics.
+
+The Tamiya connectors found on many of the FTC® legal batteries are very weak and prone to becoming unreliable after many repeated plug/unplug cycles. It is recommended that teams crimp new Anderson PowerPole connectors onto the battery.
+
+It is highly recommended for teams to use the REV grounding strap and the REV USB strain relief to help prevent disconnections.
+
+To protect wires, teams often use wire loom, and to help wires extend far, teams often use cable carrier (also known as cable chain).
+

@@ -1,0 +1,1029 @@
+Macanum TeleOp
+
+Mecanum drive is a widely used drivetrain architecture in FIRST Tech Challenge (FTC®) robotics that enables holonomic movement. A holonomic system can independently control three degrees of freedom in a plane: translating forward/backward (Y-axis), strafing side-to-side (X-axis), and rotating in place.
+
+SECTION: Core Physics & Kinematics
+
+1. Passive Rollers & Force Vector Angle
+
+- Roller Alignment: Mecanum wheels feature passive, free-spinning rollers mounted around the circumference at a 45° angle relative to the wheel plane.
+- Force Vector Direction: Standard traction wheels exert force parallel to the wheel direction. In contrast, a mecanum wheel's ground friction exerts a force vector directed at 45° relative to the wheel's orientation.
+
+2. Vector Addition & Cancellation
+- Independent Control: Each of the four wheels is driven by its own independent motor.
+- Directional Motion: Changing the individual wheel rotation directions and speeds causes the longitudinal (Y) or lateral (X) components of the four force vectors to reinforce or cancel each other:
+
+	- Forward / Backward: All wheels turn in the same direction; lateral forces cancel out, producing longitudinal motion.
+	- Strafing (Sideways): Diagonally opposite wheel pairs turn in opposite directions; longitudinal forces cancel out, producing lateral motion.
+	- Turning / Rotation: Left and right wheels spin in opposite directions, creating a net moment about the center of mass.
+	- Translational + Rotational Combo: Mixing differential speeds allows smooth translation while turning.
+
+Common COTS (Commercial Off-The-Shelf) Kits
+- goBILDA: Strafer Chassis Kit
+- REV Robotics: REV Mecanum Drivetrain Kit
+
+1. System Overview & Holonomic Motion
+- System Type: Mecanum Wheel Drivetrain (commonly used in FTC® robotics).
+- Capability: Holonomic movement (3 degrees of freedom in a plane: forward/backward translation, lateral strafing, and rotation in place).
+- Notable COTS Kits: goBILDA Strafer Chassis Kit, REV Mecanum Drivetrain Kit.
+
+## 2. Mechanical Principles & Vectoring
+- Roller Orientation: Mecanum wheels feature passive rollers mounted around the wheel perimeter at a 45° angle.
+- Chassis Configuration: Standard 4-wheel setup requires an "X" configuration where top-down view shows rollers angled inward toward the center of the chassis.
+- Force Vectors: Spinning a wheel creates a force vector directed at 45° relative to the chassis frame.
+- Vector Summation: Modulating motor direction and speed causes X (lateral) or Y (longitudinal) force components to reinforce or cancel:
+  * Forward / Backward: All 4 wheels spin forward/backward; lateral (X) vectors cancel out.
+  * Strafing (Sideways): Diagonally opposite wheel pairs turn in opposite directions; longitudinal (Y) vectors cancel out.
+  * Rotating: Left and right wheel sets turn in opposite directions.
+- Friction Factors: Lateral movement encounters higher friction/resistance due to passive roller slip; forward/backward movement is slightly faster than strafing. Combining translation and rotation yields lower overall peak speeds.
+
+
+SECTION: Kinematic Equations
+
+Given controller inputs:
+
+- y  = Forward/Backward translation (Gamepad Left Stick Y, inverted so forward is positive)
+- x  = Strafe translation (Gamepad Left Stick X)
+- rx = Rotation (Gamepad Right Stick X)
+
+Motor Power Calculations:
+- Front Left Power  = y + x + rx
+- Back Left Power   = y - x + rx
+- Front Right Power = y - x - rx
+- Back Right Power  = y + x - rx
+
+Power Normalization Algorithm:
+
+When inputs combine, sum of powers may exceed 1.0. To preserve direction and ratio without motor clipping:
+1. Determine max magnitude among calculated powers:
+   maxPower = max(|FL|, |BL|, |FR|, |BR|)
+2. If maxPower > 1.0:
+   FL = FL / maxPower
+   BL = BL / maxPower
+   FR = FR / maxPower
+   BR = BR / Maxpower
+
+SECTION: Deriving Mecanum Control Equations
+
+Before thinking about mecanum, envision a scenario where you have a 2 motor tank drivetrain which you want to control using the left stick Y axis for forward/backward movement, and the right stick X axis for pivot turning. The motors are configured so that positive is clockwise for the right motor when the body is facing away from you, and the left motor is the opposite. To control only forward/backward movement, you simply need to set the motor powers to the Y stick value (flip the sign since Y is reversed):
+
+Java Example 1 (Forward/Backward Control):
+double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
+leftMotor.setPower(y);
+rightMotor.setPower(y);
+
+Although at first adding rotation might seem like a difficult task, it's actually super simple. All you need to do is subtract the right X stick value from the right wheels, and add it to the left:
+
+Java Example 2 (Adding Rotation):
+double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
+double rx = gamepad1.right_stick_x;
+leftMotor.setPower(y + rx);
+rightMotor.setPower(y - rx);
+
+Here, if the left stick is pressed upwards, both of the motors will be fed a positive value, causing the robot to move forward. If it is pressed downwards, both of the motors will be fed a negative value, causing the robot to move backwards. A similar principle applies for rotation: if the right stick is pushed rightward, the left wheels will spin forward while the right spin backward, causing rotation. The opposite applies for pushing the stick left. If both sticks are pushed at the same time, say the left Y stick is at 1 and the right X stick is also at 1, the value of the left wheels will be 1 + 1 = 2 (which gets clipped to 1 in the SDK) and the right wheels will be 1 - 1 = 0, which causes a rightward curve.
+
+Applying omnidirectional movement with mecanum wheels operates under the same principle as adding turning into the tank example. The left stick X values will be added or subtracted to each wheel depending on how that wheel needs to rotate to get the desired movement. The only difference from turning is that rather than wheels on the same side being the same sign, wheels diagonal to each other will be the same sign.
+
+We want a positive left stick X value to correlate to rightward strafing. This means that the front left and back right need to rotate forward, while the back left and front right need to rotate backwards. So, we should add the x value to the front left and back right and subtract it from the back left and front right:
+
+Java Example 3 (Adding Strafing Component):
+double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
+double x = gamepad1.left_stick_x;
+double rx = gamepad1.right_stick_x;
+
+frontLeftMotor.setPower(y + x + rx);
+backLeftMotor.setPower(y - x + rx);
+frontRightMotor.setPower(y - x - rx);
+backRightMotor.setPower(y + x - rx);
+
+Important Motor Direction Note:
+Most FTC motors spin counterclockwise when viewed from their face when given positive power by default, with the exception of NeveRests. If your drivetrain uses an even number of gears, this will reverse the direction the motors spin in.
+On most drivetrains, you will need to reverse the left side for positive power to move forwards with most motors, and reverse the right side with NeveRests. The presence of gearing between the motor gearbox and the wheel may swap this, which is the case for the goBILDA Strafer and the REV Mecanum Drivetrain Kit.
+
+This is the same as the tank example, except now with 4 motors and the strafing component added. Similarly to the tank example, the Y component is added to all wheels, and the right X (rx) is added to the left wheels and subtracted from the right. Now, we have added a left X component (x) that allows us to strafe rightward. In doing that, however, we have actually allowed for strafing in any direction. Pressing the left joystick to the left will do the same thing in reverse, which is what is needed to strafe left. If it is pressed at 45 degrees, the x and y components of the joystick will be equal. This will cause two diagonal motors to cancel, allowing for diagonal movement. This same effect applies to every angle of the joystick.
+
+Optimization 1: Strafing Multiplier
+Multiplying the left X value by a constant counteracts imperfect strafing, making the drive feel more accurate on non-axis-aligned directions.
+
+Java Example 4 (Strafing Multiplier):
+double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
+double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+double rx = gamepad1.right_stick_x;
+
+Optimization 2: Ratio Power Normalization
+Scale the values into the range of -1 to 1. Since the SDK simply clips (limits) the powers to that range, ratios between motor powers can be distorted if any value exceeds 1. Divide all powers by the largest power's absolute value when it exceeds 1:
+
+Java Example 5 (Power Scaling Normalization):
+// Denominator is the largest motor power (absolute value) or 1
+// This ensures all the powers maintain the same ratio, but only when
+// at least one is out of the range [-1, 1]
+double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+double frontLeftPower = (y + x + rx) / denominator;
+double backLeftPower = (y - x + rx) / denominator;
+double frontRightPower = (y - x - rx) / denominator;
+double backRightPower = (y + x - rx) / denominator;
+
+SECTION: Robot-Centric Final Sample Code
+
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+@TeleOp
+public class MecanumTeleOp extends LinearOpMode {
+    @Override
+    public void runOpMode() throws InterruptedException {
+        // Declare our motors
+        // Make sure your ID's match your configuration
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
+        DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+
+        // Reverse the right side motors. This may be wrong for your setup.
+        // If your robot moves backwards when commanded to go forwards,
+        // reverse the left side instead.
+        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        waitForStart();
+
+        if (isStopRequested()) return;
+
+        while (opModeIsActive()) {
+            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+            double rx = gamepad1.right_stick_x;
+
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
+
+            frontLeftMotor.setPower(frontLeftPower);
+            backLeftMotor.setPower(backLeftPower);
+            frontRightMotor.setPower(frontRightPower);
+            backRightMotor.setPower(backRightPower);
+        }
+    }
+}
+
+
+
+SECTION: Field Centric
+
+With field centric mecanum drive, the translation joystick controls the direction of the robot relative to the field, as opposed to the robot frame. This is preferred by some drivers, and makes some evasive action easier, as one can spin while translating in a given direction easier. To do this, the x/y components of the joysticks are rotated counter to the robot's angle, which is given by the IMU.
+
+There is an IMU inside of Control Hubs (and older models of Expansion Hubs). Unlike most other hardware, it is recommended to do more than hardwareMap.get() to begin using it. Note, this is configured when creating a new configuration by default as "imu".
+
+Initialization Example:
+// Retrieve the IMU from the hardware map
+imu = hardwareMap.get(IMU.class, "imu");
+// Adjust the orientation parameters to match your robot
+IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+    RevHubOrientationOnRobot.LogoFacingDirection.UP,
+    RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+));
+// Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+imu.initialize(parameters);
+
+The angle needs to be read every loop. In addition to this, while the IMU keeps a consistent zero position between OpModes (relevantly, including between autonomous and teleop), adding a bind to reset the angle is important to counteract drift and because the zero can change due to some types of disconnects.
+
+Note:
+BNO055 objects will reset the IMU zero when initialize is called. The BNO055 class is not recommended for new development. The IMU class does not have this behavior, and is the appropriate replacement as of SDK v8.1.
+
+Heading Reading & Reset Example:
+// This button choice was made so that it is hard to hit on accident,
+// it can be freely changed based on preference.
+// The equivalent button is start on Xbox-style controllers.
+if (gamepad1.options) {
+    imu.resetYaw();
+}
+
+double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+Vector Counter-Rotation Formula:
+The translation joystick values need to be counterrotated by the robot heading. The IMU returns heading, however we need to rotate the movement counter to the robot's rotation, so its negative is taken. The joystick values are a vector, and rotating a vector in 2D requires this formula:
+x2 = x1 * cos(β) - y1 * sin(β)
+y2 = x1 * sin(β) + y1 * cos(β)
+
+Java Implementation:
+// Rotate the movement direction counter to the bot's rotation
+double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+Rotated Kinematics:
+double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+double frontLeftPower = (rotY + rotX + rx) / denominator;
+double backLeftPower = (rotY - rotX + rx) / denominator;
+double frontRightPower = (rotY - rotX - rx) / denominator;
+double backRightPower = (rotY + rotX - rx) / denominator;
+
+
+
+SECTION: Field-Centric Final Sample Code
+
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+@TeleOp
+public class FieldCentricMecanumTeleOp extends LinearOpMode {
+    @Override
+    public void runOpMode() throws InterruptedException {
+        // Declare our motors
+        // Make sure your ID's match your configuration
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
+        DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+
+        // Reverse the right side motors. This may be wrong for your setup.
+        // If your robot moves backwards when commanded to go forwards,
+        // reverse the left side instead.
+        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // Retrieve the IMU from the hardware map
+        IMU imu = hardwareMap.get(IMU.class, "imu");
+        // Adjust the orientation parameters to match your robot
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+        ));
+        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+        imu.initialize(parameters);
+
+        waitForStart();
+
+        if (isStopRequested()) return;
+
+        while (opModeIsActive()) {
+            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
+
+            // This button choice was made so that it is hard to hit on accident,
+            // it can be freely changed based on preference.
+            // The equivalent button is start on Xbox-style controllers.
+            if (gamepad1.options) {
+                imu.resetYaw();
+            }
+
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+            // Rotate the movement direction counter to the bot's rotation
+            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+            rotX = rotX * 1.1; // Counteract imperfect strafing
+
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+            double frontLeftPower = (rotY + rotX + rx) / denominator;
+            double backLeftPower = (rotY - rotX + rx) / denominator;
+            double frontRightPower = (rotY - rotX - rx) / denominator;
+            double backRightPower = (rotY + rotX - rx) / denominator;
+
+            frontLeftMotor.setPower(frontLeftPower);
+            backLeftMotor.setPower(backLeftPower);
+            frontRightMotor.setPower(frontRightPower);
+            backRightMotor.setPower(backRightPower);
+        }
+    }
+
+SECTION: Gamepad Layout & Button Aliases
+
+
+Since both PS4-style and Xbox-Style controllers are FTC® legal, there are aliases in the FTC SDK between PS4-style and Xbox-style button naming.
+
+Button Aliases Mapping (FTC SDK):
+In the FTC SDK, the PS4 button 'circle' corresponds to the Xbox button 'b'.
+In the FTC SDK, the PS4 button 'cross' corresponds to the Xbox button 'a'.
+In the FTC SDK, the PS4 button 'triangle' corresponds to the Xbox button 'y'.
+In the FTC SDK, the PS4 button 'square' corresponds to the Xbox button 'x'.
+In the FTC SDK, the PS4 button 'share' corresponds to the Xbox button 'back'.
+In the FTC SDK, the PS4 button 'options' corresponds to the Xbox button 'start'.
+In the FTC SDK, the PS4 button 'ps' corresponds to the Xbox button 'guide'.
+
+SECTION: Gamepad Feedback Support
+
+The Logitech F310 gamepad has no rumble capability and no LED control.
+The Xbox 360 gamepad supports built-in gamepad feedback features.
+The DualShock 4 (PS4) gamepad supports built-in gamepad feedback features.
+The EtPark gamepad supports built-in gamepad feedback features.
+
+SECTION: Boolean Inputs
+
+TeleOp OpModes are generally written in iterative style, with a loop that contains code that is called over and over. Under this paradigm, a simple handling of user input could look like:
+
+if (gamepad1.a) {
+    motor.setPower(1);
+} else {
+    motor.setPower(0);
+}
+
+In this situation, this likely does what the driver wants: while the button is held, the motor’s power is set to 1, and otherwise the power is set to 0. Since writing the same power to a motor multiple times has no effect on the motor’s behavior, this works perfectly fine. 
+
+However, issues arise when wanting to do something once when a button is pressed. For example, it is tempting to write something like this to get a press of a or b to adjust a servo:
+
+if (gamepad1.a) {
+    servo.setPosition(servo.getPosition() + 0.1);
+} else if (gamepad1.b) {
+    servo.setPosition(servo.getPosition() - 0.1);
+}
+
+However, this will behave unpredictably, as each time the button is pressed, the setPosition method will be called multiple times as the loop frequency changes as does the button press length. There are a few techniques to avoid this, however they all require comparing the gamepad state to the gamepad state in the previous loop; therefore, it is necessary to store it.
+
+
+
+SECTION: Storing Gamepad State
+
+
+While each gamepad input’s previous state could be stored individually in a variable (e.g., boolean previousA), this very quickly gets annoying. Luckily, the FTC SDK provides a way to copy gamepad states, with gamepad.copy(gamepadToCopy).
+
+Note:
+In addition to storing the gamepad state for the previous iteration of the loop, the gamepad state for the current iteration of the loop is also stored. This is necessary because if the state of a button was always read from gamepad1 / gamepad2, it could change between reading the value and storing the previous value. This is because gamepad1 / gamepad2 update concurrently for LinearOpMode, and so can change during a loop iteration.
+
+In a LinearOpMode based TeleOp program, storing both current and previous gamepad state could look like:
+
+public void runOpMode() {
+    // By setting these values to new Gamepad(), they will default to all
+    // boolean values as false and all float values as 0
+    Gamepad currentGamepad1 = new Gamepad();
+    Gamepad currentGamepad2 = new Gamepad();
+
+    Gamepad previousGamepad1 = new Gamepad();
+    Gamepad previousGamepad2 = new Gamepad();
+
+    // other initialization code goes here
+
+    while (opModeIsActive()) {
+        // Store the gamepad values from the previous loop iteration in
+        // previousGamepad1/2 to be used in this loop iteration.
+        // This is equivalent to doing this at the end of the previous
+        // loop iteration, as it will run in the same order except for
+        // the first/last iteration of the loop.
+        previousGamepad1.copy(currentGamepad1);
+        previousGamepad2.copy(currentGamepad2);
+
+        // Store the gamepad values from this loop iteration in
+        // currentGamepad1/2 to be used for the entirety of this loop iteration.
+        // This prevents the gamepad values from changing between being
+        // used and stored in previousGamepad1/2.
+        currentGamepad1.copy(gamepad1);
+        currentGamepad2.copy(gamepad2);
+
+        // Main teleop loop goes here
+    }
+}
+
+
+
+SECTION: Rising Edge Detector
+
+
+Why is it called a rising edge detector?
+A signal edge is a transition in a digital signal. In this case, the digital signal is the gamepad input, which is low when not held and high when held. The rising edge is the transition from low to high, and the falling edge is the transition from high to low.
+
+The most commonly used technique is a rising edge detector. It allows code to be run only once when the button is initially pressed, as opposed to every loop while it is held down. It works by checking that the button is currently pressed, but was not pressed in the previous loop. For example, inside of a TeleOp loop:
+
+if (currentGamepad1.a && !previousGamepad1.a) {
+    servo.setPosition(servo.getPosition() + 0.1);
+}
+
+This will increase the servo position by 0.1 exactly once per press of a.
+
+
+
+SECTION: Falling Edge Detector
+
+
+A very similar technique is a falling edge detector. It allows code to be run only once when the button is released, as opposed to every loop while it is held down. It works by checking that the button is currently not pressed, but was pressed in the previous loop. For example, inside of a TeleOp loop:
+
+if (!currentGamepad1.b && previousGamepad1.b) {
+    servo.setPosition(servo.getPosition() - 0.1);
+}
+
+This will decrease the servo position by 0.1 exactly once per release of b.
+
+Note:
+One button can run different code on the rising and falling edge. This is mainly useful for fairly complex interactions.
+
+
+SECTION: Toggles
+
+One common use case for rising edge detectors is to control toggles. Toggles can be used to have a button for the robot to switch between states; for example, turning an intake on and off. This can be done for any number of states but is most commonly done between two. To make a toggle between two states, a rising edge detector is used to set a boolean to its opposite and then that boolean is used to control an action.
+
+Example Code:
+Within the initialization code:
+boolean intakeToggle = false;
+
+Inside of the corresponding TeleOp loop:
+// Rising edge detector
+if (currentGamepad1.a && !previousGamepad1.a) {
+    // This will set intakeToggle to true if it was previously false
+    // and intakeToggle to false if it was previously true,
+    // providing a toggling behavior.
+    intakeToggle = !intakeToggle;
+}
+
+// Using the toggle variable to control the robot.
+if (intakeToggle) {
+    intakeMotor.setPower(1);
+} else {
+    intakeMotor.setPower(0);
+}
+
+Note:
+The less a driver has to keep in their head about the state of the robot the less they can screw up. Since toggles mean that a button does different things every time it is pressed, consider alternate solutions. This is especially true for toggles with more than two states.
+
+
+
+SECTION: Gamepad Feedback
+
+
+Gamepad feedback (i.e. rumble and LED control) can be a helpful way for robots to communicate status to a driver during a match. The degree to which the legal gamepads support this functionality varies:
+
+- Logitech F310: Rumble: none | LED Control: none
+- Xbox 360, DualShock4 (PS4), EtPark support various feedback features.
+
+Tip:
+Gamepad feedback can be used to alert drivers of: start of endgame, intake loaded, automatic alignment complete, etc.
+
+
+
+SECTION: Rumble
+
+
+The SDK provides both a simple and more complex API for controlling rumble according to the desired use case.
+
+Note:
+- Rumble power is specified as a floating-point value in the range [0.0, 1.0].
+- Rumble duration is specified in milliseconds as an integer. The constant Gamepad.RUMBLE_DURATION_CONTINUOUS may be used to indicate that the rumble should continue until another rumble action is commanded.
+- All rumble actions are completed asynchronously; i.e. the function calls will return immediately. Any call to a rumble API will immediately displace any currently running rumble action. That is, if you command a gamepad to rumble for 750ms and then immediately command a rumble for 250ms, the gamepad will rumble for 250ms from the time the second command was issued.
+
+Simple API:
+The simplest way to command rumble: rumble motor 1 at 100% power for a specified duration:
+gamepad1.rumble(int durationMs);
+
+If control over both rumble motors and rumble intensity is desired:
+gamepad1.rumble(double rumble1, double rumble2, int durationMs);
+
+To make a gamepad rumble for a certain number of “blips” (the notion of what a “blip” is being predefined by the SDK):
+gamepad1.rumbleBlips(int numBlips);
+
+Helper Functions:
+- public boolean isRumbling(): Provides an educated guess about whether there is a rumble action ongoing on this gamepad. The Robot Controller does not know for sure whether a rumble action is ongoing or not, because once the command is sent to the Driver Station, the Driver Station handles running the gamepad effects and the Robot Controller is “hands off”.
+- public void stopRumble(): May be used to stop any ongoing rumble action for a gamepad (perhaps most useful in conjunction with a rumble of continuous duration).
+
+Advanced API:
+To create more advanced rumble behavior, a RumbleEffect may be created, which is composed of “Steps” which specify the power and duration each rumble motor should operate at. When a gamepad is commanded to run a RumbleEffect, it will perform each of the “Steps” in series.
+
+To create a RumbleEffect, the RumbleEffect.Builder class must be used. The builder provides the addStep(double rumble1, double rumble2, int durationMs) function which is used to add a step to the sequence, and the build() function to create a RumbleEffect from the sequence of steps.
+
+Using an anonymous instance of the builder class is the cleanest way to construct a RumbleEffect, for example:
+
+Gamepad.RumbleEffect effect = new Gamepad.RumbleEffect.Builder()
+    .addStep(0.0, 1.0, 500) // Rumble right motor 100% for 500 mSec
+    .addStep(0.0, 0.0, 300) // Pause for 300 mSec
+    .addStep(1.0, 0.0, 250) // Rumble left motor 100% for 250 mSec
+    .addStep(0.0, 0.0, 250) // Pause for 250 mSec
+    .addStep(1.0, 0.0, 250) // Rumble left motor 100% for 250 mSec
+    .build();
+
+Once a RumbleEffect has been created, it can be sent to a gamepad by calling:
+gamepad1.runRumbleEffect(effect);
+
+SECTION: LED Control
+
+Note:
+- RGB LED component (i.e. red, green, blue) intensity is specified as a floating-point value in the range [0.0, 1.0].
+- LED duration is specified in milliseconds as an integer. The constant Gamepad.LED_DURATION_CONTINUOUS may be used to indicate that the LED should remain the specified color until another command is issued.
+- All LED actions are completed asynchronously; i.e. the function calls will return immediately. Any call to an LED API will immediately displace any currently running LED action. That is, if you command the LED green for 750ms and then immediately command purple for 250ms, the LED will light purple for 250ms from the time the second command was issued.
+
+To set the LED color for a fixed duration:
+gamepad1.setLedColor(double r, double g, double b, int durationMs);
+
+To create more advanced LED behavior, an LedEffect may be created, which is composed of “Steps” which specify a color and the duration for which to maintain it. When a gamepad is commanded to run an LedEffect, it will perform each of the “Steps” in series.
+
+To create an LedEffect, the LedEffect.Builder class must be used. The builder provides the addStep(double r, double g, double b, int durationMs) function which is used to add a step to the sequence, and the build() function to create an LedEffect from the sequence of steps.
+
+Using an anonymous instance of the builder class is the cleanest way to construct an LedEffect, for example:
+
+Gamepad.LedEffect rgbEffect = new Gamepad.LedEffect.Builder()
+    .addStep(1, 0, 0, 250) // Show red for 250ms
+    .addStep(0, 1, 0, 250) // Show green for 250ms
+    .addStep(0, 0, 1, 250) // Show blue for 250ms
+    .addStep(1, 1, 1, 250) // Show white for 250ms
+    .build();
+
+Once an LedEffect has been created, it can be sent to a gamepad by calling:
+gamepad1.runLedEffect(rgbEffect);
+
+
+SECTION: Overview of Telemetry
+
+
+The FTC SDK has “telemetry” that can be sent from the Robot Controller to the Driver Station to display basic text. This telemetry is accessible through the Telemetry class, via the telemetry variable available in both OpMode and LinearOpMode.
+
+
+
+SECTION: Building Telemetry
+
+There are two main methods used to add items to telemetry:
+
+1. addData(): Takes two parameters—a string for the caption, and a value which can be any object. This is displayed on the Driver Station phone/screen in the format "caption : value". These lines are keyed, so adding a secondary addData() call with an existing caption will override the previously set value.
+
+Java Example:
+telemetry.addData("Caption 1", 2.5);
+telemetry.addData("Caption 2", "value");
+
+2. addLine(): Used to add a blank line with no parameters, or can take a single string to print as a standalone line.
+
+Java Example:
+telemetry.addLine("This is a line!");
+
+SECTION: Updating Telemetry
+
+
+Once all telemetry items have been added (typically at the end of an OpMode loop), telemetry.update() must be called. Calling this method pushes the queued values to the Driver Station screen. Without calling telemetry.update(), new telemetry will not appear.
+
+Note on OpMode:
+Iterative OpMode calls telemetry.update() automatically once per call of its loop() method.
+
+Tip on Refresh Intervals:
+By default, telemetry is only refreshed on the Driver Station every 250 ms. Any calls to telemetry.update() during this window will be saved and overwritten if update() is called again before 250 ms have elapsed. The setMsTransmissionInterval() method may be used to adjust the amount of time the SDK waits between sending updates to the Driver Station.
+
+
+SECTION: What Are Encoders?
+
+
+In FTC®, encoders track the rotational angle of a mechanism, such as drivetrain wheel rotations, arm angles, or string slide extension distance. An encoder refers to any sensor that tracks the rotational angle of a mechanism.
+
+There are two main types of encoders used in FTC: relative encoders and absolute encoders. Relative encoders are the most common type.
+
+
+
+SECTION: Relative Encoders
+
+
+Relative encoders range from the built-in encoder inside every FTC-legal motor to common external encoders like the REV Through Bore encoder. They track the relative position of the shaft or mechanism they are attached to.
+
+Key Characteristics:
+- Position output is relative to the initial position at robot power on.
+- Position information is lost between power cycles.
+- Relative encoders do NOT reset to zero automatically at the beginning of OpModes. You can use STOP_AND_RESET_ENCODER to ensure encoders start at zero.
+- All relative encoders in FTC use the "quadrature" protocol to send position information to the REV Expansion Hub or Control Hub.
+- Relative encoders must be plugged into the encoder ports located near the motor ports to function.
+
+
+
+SECTION: Terminology
+
+- Count (or Tick): Refers to one increment of the encoder's position. Relative encoders report their position as an integer equal to the number of counts or ticks moved from the starting angle.
+- Counts Per Revolution (CPR): The number of counts an encoder reports after completing exactly one full revolution. This value converts encoder counts into degrees, radians, or revolutions.
+
+Warning on Quadrature Terminology:
+Terminology can be confusing across manufacturers:
+- Some encoders report Pulses Per Revolution (PPR). One pulse can equal 1 or 4 counts depending on context.
+- Other encoders report Cycles Per Revolution (which shares the CPR acronym with Counts Per Revolution).
+- The best way to verify is to plug the encoder into the REV Hub, turn it 1 full revolution by hand, and check the reported telemetry counts.
+
+
+
+SECTION: Programming Encoders
+
+
+
+SECTION: Reading Encoders
+
+In FTC software, quadrature encoders and motors are accessed through the same DcMotor object.
+
+Basic Reading:
+int position = motor.getCurrentPosition();
+
+External Encoders:
+To read external encoders, call getCurrentPosition() on the DcMotor object assigned to that specific motor port number.
+DcMotor motor = hardwareMap.dcMotor.get("Arm Motor");
+double position = motor.getCurrentPosition();
+
+Resetting Encoders:
+To reset an encoder to zero at the beginning of an OpMode:
+motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); // Reset the motor encoder
+motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);     // Turn motor back on for standard control
+
+Note on RUN_WITHOUT_ENCODER:
+RUN_WITHOUT_ENCODER does not disable the encoder. It tells the SDK not to use the motor encoder for built-in closed-loop velocity control, while still allowing manual power commands and position reading.
+
+Sample OpMode - Reading Encoders:
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@TeleOp
+public class EncoderOpmode extends LinearOpMode {
+    @Override
+    public void runOpMode() throws InterruptedException {
+        // Find a motor in the hardware map named "Arm Motor"
+        DcMotor motor = hardwareMap.dcMotor.get("Arm Motor");
+
+        // Reset the motor encoder so that it reads zero ticks
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+            // Get the current position of the motor
+            int position = motor.getCurrentPosition();
+
+            // Show the position of the motor on telemetry
+            telemetry.addData("Encoder Position", position);
+            telemetry.update();
+        }
+    }
+}
+
+
+
+SECTION: Calculating Revolutions and Angles
+
+
+Converting Ticks to Revolutions:
+double CPR = [Your Counts Per Revolution Here];
+int position = motor.getCurrentPosition();
+double revolutions = position / CPR;
+
+Calculating Motor CPR with Gearboxes:
+To calculate a motor's Counts Per Revolution, multiply the base motor's CPR by the exact gearbox ratio.
+Example: A 5:1 REV Ultraplanetary motor has a base motor CPR of 28 and an actual gear ratio of 5.23:1.
+Total CPR = 28 * 5.23 = 146.44 CPR.
+When stacking multiple gearhead stages, multiply all gear ratios together.
+
+Converting Revolutions to Degrees:
+double angle = revolutions * 360;
+double angleNormalized = angle % 360; // Wraps angle to range [0, 360)
+
+Full Testing Program - Angle & Revolutions:
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@TeleOp
+public class EncoderOpmode extends LinearOpMode {
+    @Override
+    public void runOpMode() throws InterruptedException {
+        DcMotor motor = hardwareMap.dcMotor.get("Arm Motor");
+
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+            double CPR = [Your Counts Per Revolution Here];
+
+            int position = motor.getCurrentPosition();
+            double revolutions = position / CPR;
+            double angle = revolutions * 360;
+            double angleNormalized = angle % 360;
+
+            telemetry.addData("Encoder Position", position);
+            telemetry.addData("Encoder Revolutions", revolutions);
+            telemetry.addData("Encoder Angle (Degrees)", angle);
+            telemetry.addData("Encoder Angle - Normalized (Degrees)", angleNormalized);
+            telemetry.update();
+        }
+    }
+}
+
+
+
+SECTION: Tracking Wheels and Spools (Linear Distance)
+
+
+For linear mechanisms (spools, linear slides, drive wheels), convert rotations to linear displacement using circumference.
+
+Diameter Selection Rules:
+- Drive/Tracking Wheels: Outer diameter of the wheel.
+- Spools: Inner diameter of the spool (where the string wraps).
+- Chains/Belts: Pitch diameter of the sprocket or pulley.
+
+Linear Distance Math:
+double diameter = 1.0; // Replace with your wheel/spool diameter
+double circumference = Math.PI * diameter;
+double distance = circumference * revolutions;
+
+Note on Units:
+Ensure consistent units throughout. If diameter is in inches, output distance will be in inches. If diameter is in millimeters, output distance will be in millimeters.
+
+Full Testing Program - Spool / Linear Distance:
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@TeleOp
+public class SpoolEncoderOpmode extends LinearOpMode {
+    @Override
+    public void runOpMode() throws InterruptedException {
+        DcMotor motor = hardwareMap.dcMotor.get("Arm Motor");
+
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+            double CPR = [Your Counts Per Revolution Here];
+            double diameter = 1.0; // Replace with your wheel/spool's diameter
+            double circumference = Math.PI * diameter;
+
+            int position = motor.getCurrentPosition();
+            double revolutions = position / CPR;
+            double angle = revolutions * 360;
+            double angleNormalized = angle % 360;
+            double distance = circumference * revolutions;
+
+            telemetry.addData("Encoder Position", position);
+            telemetry.addData("Encoder Revolutions", revolutions);
+            telemetry.addData("Encoder Angle (Degrees)", angle);
+            telemetry.addData("Encoder Angle - Normalized (Degrees)", angleNormalized);
+            telemetry.addData("Linear Distance", distance);
+            telemetry.update();
+        }
+    }
+}
+
+
+
+SECTION: Running Motors With Encoders (RUN_TO_POSITION)
+
+
+To command a motor to automatically move to a specific position using closed-loop PID control, use RUN_TO_POSITION.
+
+Important Sequence Warning:
+You MUST set the target position using setTargetPosition() BEFORE calling setMode(DcMotor.RunMode.RUN_TO_POSITION). Calling RUN_TO_POSITION before setTargetPosition() will throw an error.
+
+Code Pattern:
+DcMotor motor = hardwareMap.dcMotor.get("Arm Motor");
+int desiredPosition = 1000; // Target position in encoder ticks (must be integer)
+motor.setTargetPosition(desiredPosition);
+motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+motor.setPower(0.5); // Sets the maximum power/speed cap for the movement
+
+Full Sample OpMode - Arm Control with RUN_TO_POSITION:
+package org.firstinspires.ftc.teamcode.Tests;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@TeleOp
+public class ArmOpMode extends LinearOpMode {
+    @Override
+    public void runOpMode() throws InterruptedException {
+        // Position of the arm when it's lifted
+        int armUpPosition = 1000;
+        // Position of the arm when it's down
+        int armDownPosition = 0;
+
+        // Find a motor in the hardware map named "Arm Motor"
+        DcMotor armMotor = hardwareMap.dcMotor.get("Arm Motor");
+
+        // Reset the motor encoder so that it reads zero ticks
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        // Sets the starting position of the arm to the down position
+        armMotor.setTargetPosition(armDownPosition);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+            // If the A button is pressed, raise the arm
+            if (gamepad1.a) {
+                armMotor.setTargetPosition(armUpPosition);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor.setPower(0.5);
+            }
+
+            // If the B button is pressed, lower the arm
+            if (gamepad1.b) {
+                armMotor.setTargetPosition(armDownPosition);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor.setPower(0.5);
+            }
+
+            // Get the current position of the armMotor
+            double position = armMotor.getCurrentPosition();
+
+            // Get the target position of the armMotor
+            double desiredPosition = armMotor.getTargetPosition();
+
+            // Show the position of the armMotor on telemetry
+            telemetry.addData("Encoder Position", position);
+
+            // Show the target position of the armMotor on telemetry
+            telemetry.addData("Desired Position", desiredPosition);
+            telemetry.update();
+        }
+    }
+}
+
+
+SECTION: What Are Bulk Reads?
+
+
+Bulk reads are a LynxCommand that reads all sensor values (except I2C) on a hub at once. This takes the same amount of time to execute as any other LynxCommand, and can therefore save a lot of time in the execution loop; with a bulk read, reading ten sensors takes as much time as reading one sensor (if they are not I2C and are on the same hub).
+
+This became much simpler to do with SDK versions 5.4 and above, with a built-in way to easily access it.
+
+
+
+SECTION: Off Mode
+
+
+This is the default mode. It means bulk reads are not used by the SDK when calling normal hardware-access methods.
+
+Note:
+Bulk reads can still be accessed by calling the LynxModule.getBulkInputData() method; however, if one wishes to use bulk reads (which is highly recommended), using AUTO or MANUAL modes is simpler.
+
+To manually set OFF mode:
+List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+for (LynxModule hub : allHubs) {
+    hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
+}
+
+
+
+SECTION: Auto Mode
+
+
+This is the simplest mode to use that utilizes bulk reads. A new bulk read is performed whenever a hardware read is repeated.
+
+Recommended Usage Example:
+List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+for (LynxModule hub : allHubs) {
+    hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+}
+
+while (opModeIsActive()) {
+    // Will run one bulk read per cycle; however, if e.g.
+    // frontLeftMotor.getCurrentPosition() was called again,
+    // a new bulk read would be issued
+    int frontLeftEncoderPos = frontLeftMotor.getCurrentPosition();
+    int frontRightEncoderPos = frontRightMotor.getCurrentPosition();
+    int backLeftEncoderPos = backLeftMotor.getCurrentPosition();
+    int backRightEncoderPos = backRightMotor.getCurrentPosition();
+}
+
+Problematic Usage Example in AUTO Mode:
+List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+for (LynxModule hub : allHubs) {
+    hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+}
+
+while (opModeIsActive()) {
+    // Will run two bulk reads per cycle,
+    // as frontLeftMotor.getCurrentPosition() is called twice
+    int frontLeftEncoderPos = frontLeftMotor.getCurrentPosition();
+    int frontLeftEncoderPos2 = frontLeftMotor.getCurrentPosition();
+}
+
+Summary of AUTO Mode:
+Overall, AUTO mode is recommended because it is very unlikely to mess anything up and can provide significant performance improvements for little effort. The user does not need to manually flush the bulk read cache, though this means losing some explicit timing control.
+
+
+
+SECTION: Manual Mode
+
+
+In MANUAL mode, the cache for bulk reads is only reset when manually instructed. This minimizes extraneous reads to the absolute minimum, but if the cache is not cleared properly, stale sensor values will be returned.
+
+Proper Implementation of MANUAL Mode:
+List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+for (LynxModule hub : allHubs) {
+    hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+}
+
+while (opModeIsActive()) {
+    // Will run one bulk read per cycle,
+    // even as frontLeftMotor.getCurrentPosition() is called twice
+    // because the caches are being handled manually and cleared once a loop
+    for (LynxModule hub : allHubs) {
+        hub.clearBulkCache();
+    }
+
+    int frontLeftEncoderPos = frontLeftMotor.getCurrentPosition();
+    int frontLeftEncoderPos2 = frontLeftMotor.getCurrentPosition();
+}
+
+Warning:
+When in MANUAL mode, if the cache is not cleared appropriately, stale values will be returned. If you are uncertain about cache timing, AUTO mode is recommended to avoid potential logic errors.
+
+Tip:
+Bulk reads are issued per hub, so you do not necessarily need to bulk read both hubs at the same time or during every loop cycle.
+
+
+SECTION: Overview of Computer Vision
+
+
+Computer vision is the process of using computers to understand digital images, such as photographs and videos. Computer vision offers object detection which is commonly needed in FTC®.
+
+Currently, there are 3 commonly used forms of computer vision in FTC:
+1. TensorFlow Lite
+2. AprilTags
+3. OpenCV (via VisionPortal/EasyOpenCV)
+
+
+
+SECTION: Officially Supported Solutions
+
+
+
+SECTION: TensorFlow
+
+
+TensorFlow is Google’s machine learning technology, which can be trained to detect objects. The FTC SDK uses TensorFlow Lite, which is a lightweight version of Google’s TensorFlow designed to run on mobile devices. Along with Android Studio and OnBot support, TensorFlow has block support which makes it a good choice for most teams.
+
+Key Details:
+- FIRST® has released a tool called FTC-ML to train custom TensorFlow Lite models for detecting custom objects.
+- Supported in Blocks, OnBot Java, and Android Studio.
+
+
+
+SECTION: AprilTags
+
+AprilTags detect specific low-resolution, black-and-white images that are placed on various parts of the field. AprilTags are a great way to detect specific parts of the fields at wide angles, distances, and in a variety of lighting conditions.
+
+Key Details:
+- Supported in OnBot Java, Android Studio, and Blocks.
+- Official printable AprilTag target images are provided via FIRST documentation.
+
+
+
+SECTION: VisionPortal
+
+
+Introduced with FTC SDK v8.2, the VisionPortal API integrates the EasyOpenCV project into the FTC SDK. With VisionPortal, you can attach multiple VisionProcessors to a single camera. VisionProcessors are an easy way to create OpenCV pipelines, which allows for custom manipulation and processing to be applied to each incoming frame.
+
+Key Details:
+- Most powerful form of computer vision in FTC.
+- Due to higher complexity, it is recommended primarily for advanced teams.
+
+
+
+SECTION: Additional Vision Resources
+
+
+
+SECTION: EasyOpenCV Simulator
+
+
+EasyOpenCV Simulator is a straightforward way to test pipelines directly on a computer without needing physical robot hardware.
+- Supported Platforms: Windows, macOS, and Linux.
+- Features: Simulates a portion of the FTC SDK structure including the VisionPortal API, allowing code to be copied and pasted directly.
+
+
+
+SUBSECTION: FTC Dashboard
+
+
+FTC Dashboard runs a dashboard webpage on the Control Hub that, among other things, streams a live preview of a connected camera. This is a very useful tool for testing and debugging vision applications.
+
+Warning:
+FTC Dashboard is NOT legal to run during official competition matches. Ensure it is disabled during matches.
+
+
+
+SUBSECTION: Scrcpy
+
+
+Scrcpy is an easy way to display and control Android devices connected over USB.
+- Supported Platforms: Linux, Windows, and macOS.
+- Characteristics: Offers low latency, requires low system resources, and delivers high performance.
+- Use Case: Highly useful for debugging vision code on a Control Hub, enabling near real-time camera output viewing. It can also be used with a Robot Controller phone.

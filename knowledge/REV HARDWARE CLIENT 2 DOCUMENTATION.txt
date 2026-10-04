@@ -1,0 +1,447 @@
+REV HARDWARE CLIENT 2 DOCUMENTATION
+
+Overview
+The REV Hardware Client 2 (RHC2) is software designed by REV Robotics to make managing REV devices easier for the user. This client automatically detects connected devices, downloads the latest software for those devices, and allows for seamless updating of the devices.
+
+Feature Summary
+- Automatically detect supported devices when connected via USB
+- One-click update of all software on connected devices
+- Pre-download software updates without a connected device
+- Back up and restore user data from supported devices
+- Auto-update to the latest version of the REV Hardware Client 2
+
+Installation Instructions
+1. Download the REV Hardware Client 2 Installer
+2. Run the Installer
+3. Run the REV Hardware Client 2 from the applications menu or a desktop shortcut
+
+System Requirements
+Operating Systems:
+- Windows 11, Windows 10 (version 1709 - October 2017) or newer
+- macOS 15 (Sequoia) or newer
+- Linux: Ubuntu 24.04 / Debian 12 or newer
+Processor: 64-bit
+RAM: 4 GB minimum
+
+Supported Devices
+- REV Control Hub (REV-31-1595)
+- REV Driver Hub (REV-31-1596)
+- REV Expansion Hub (REV-31-1153)
+- Android Phones
+- REV SPARK MAX (REV-11-2158)
+- REV SPARK Flex (REV-11-2159)
+- REV Power Distribution Hub (REV-11-1850)
+- REV Pneumatic Hub (REV-11-1852)
+- REV Servo Hub (REV-11-1855)
+- REV MAXSpline Encoder (REV-11-9008)
+- A301 (REV-41-2714)
+- Generic CAN Devices
+
+REV Device Requirements
+REV devices must be running Firmware Versions 26.x.x or newer to be compatible with REV Hardware Client 2. Devices with 2025 firmware and below will need to be updated to 2026 firmware via Recovery Mode before use. If your REV device shows up in the REV Hardware Client 2 as an "Outdated REV Device", follow the Recovery Mode instructions to update its firmware.
+
+
+REV HARDWARE CLIENT 2 CHANGELOG
+
+Note
+For the most up-to-date changelog, please refer to the About Tab within the REV Hardware Client 2 application.
+
+Version 1.4.2
+- Adds a download location prompt for download actions from Control Hub's Robot Controller Console
+- Improves recovery of wireless Control Hub connections after a Wi-Fi drop
+
+Version 1.4.1
+- Adds a prompt on startup when an update is available, with the option to update now, on exit, or ignore it
+- Adds a prompt on startup showing the changelog after the app has been updated
+- Adds visualizer for absolute encoder utility
+- Adds inversion configuration to A301
+- Adds support for opening the update manager directly from a device's update tab to enable updating multiple devices of the same type
+- Uses Control Hub's friendly name in device list
+- Improves general experience with the FTC Log Viewer
+- Updates the supported devices list on the About page to reflect all currently supported devices
+- Fixes UI crash on Systemcore
+- Fixes Robot Controller Console not working as expected for Control Hubs connected over USB
+- Fixes Expansion Hub firmware version not showing up for Control Hub devices
+- Fixes Control Hub menu labels being illegible in light mode
+- Fixes false positive error toast when attempting to run an A301
+
+Version 1.4.0
+- Adds controller support for running motors
+- Adds auto-fetching latest releases on startup
+- Adds toast to show when an action failed due to being in read-only mode
+- Adds setpoint presets to A301/SPARK run pages
+- Adds FTC Log Viewer
+- Fixes crash when adding closed-loop control telemetry for a SPARK
+- Fixes reset safe parameters showing the incorrect number of changes made
+- Fixes run multiple checkbox not working with A301
+- Fixes moving app to applications folder on macOS
+- Fixes selecting an A301 opening a SPARK with the same CAN ID on the same bus
+
+Version 1.3.1
+- Fixes crash on run tab with A301 on versions before prerelease 16
+
+Version 1.3.0
+- Adds support for connecting to a remote RHC2 instance (like Systemcore) from a desktop client
+- Adds support for installing/updating a Systemcore's RHC2 from the desktop client
+- Adds ability for leader to release control and read-only clients to claim control
+- Adds a prompt for Windows users to install DFU drivers if none are found
+- Adds support for A301's absolute range offset parameter
+- Adds tooltip and animation for identify button
+- Improves robustness of leader/reader mechanism when clients disconnect
+- Updates robot program override to only be controlled by the leader
+- Fixes Systemcore serving a stale, cached UI after an update
+- Fixes frontend crash when downloads database file gets corrupted, particularly on Systemcore
+- Fixes sorting of Motioncore buses in telemetry tab
+
+Version 1.2.1
+- Adds support for new A301 CAN specification introduced in firmware version 27.0.0-prerelease.15
+- Adds the ability to specify a speed for position control in A301's run utility
+- Adds a toggle on the Motioncore card to override the robot program to run motors without a driver station
+- Adds gearbox and motor health status cards for A301
+- Fixes devices not showing up on the Hardware page in Safari
+
+Version 1.2.0
+- Adds support for REV FTC devices (Control Hub, Expansion Hub, Driver Hub, Driver Station Phone)
+- Adds support for CAN Encoder Adapter
+- Adds search bar for signals on Telemetry page
+- Adds search bar for SPARK configuration tab
+- Adds relative encoder utility to MAXSpline Encoder
+- Fixes sidebar on telemetry expanding when a device has an alert in either run tab
+- Fixes issue reporting
+- Fixes issue where signals would freeze after closing a device
+- Fixes issue with A301 CAN ID change not persisting
+- Fixes issue where firmware versions sometimes do not populate in the update page
+
+Known Issues (v1.2.0)
+- When connecting to a Control Hub via Wi-Fi, no other computer will be able to see the Control Hub until it is power-cycled. The same laptop can continue to see and use the Control Hub even if it reconnects or RHC2 is reopened.
+
+Version 1.1.1
+- Adds missing applied output signal for A301
+- Adds indicator to navigation bar to show whether you are in read-only mode
+- Improves startup time
+- Improves CPU and memory utilization during runtime
+- Improves leader/reader behavior
+- Improves download page
+- Improves update progress status display
+- Fixes update progress status when updating multiple devices across separate buses
+
+Version 1.1.0
+- Adds support for A301
+- Adds support for Linux Arm64
+- Adds support for multiple separate CAN buses
+- Adds support for updating the bootloader of supported devices
+- Adds support for devices connected via Motioncore when running on Systemcore
+- Adds relative encoder utility for resetting relative position
+- Improves SPARK setpoint handling to minimize interfering with a connected robot's setpoint commands
+- Fixes issue where SPARKs with pre-2025 firmware are not detected on the CAN bus
+
+Known Issues (v1.1.0)
+- Linux Arm64 does not currently support devices in DFU recovery mode
+
+Version 1.0.7
+- Adds support for configuring new MAXSpline Encoder parameters
+- Fixes start/stop button moving when running a SPARK
+
+Version 1.0.6
+- Fixes motors not stopping immediately when running multiple motors simultaneously
+- Fixes a bug causing devices to appear as remaining in bootloader mode after updating
+
+Version 1.0.5
+- Adds button to install DFU drivers on Windows
+- Adds warning when trying to run a motor without 12V
+- Adds ability to reset SPARK slider to zero by double-clicking on slider handle
+- Fixes splash screen not appearing in the foreground
+- Fixes taskbar icon not appearing immediately on Windows
+- Fixes SPARK slider setpoint resetting to zero after interacting with the minimum and maximum setpoint input boxes
+- Fixes detecting MAXSpline Encoders in bootloader mode
+- Fixes device drawer not defaulting to update page for devices in bootloader mode
+- Fixes firmware version select taking a long time to load for devices in bootloader mode
+
+Version 1.0.4
+- Adds warning about SPARK devices with an unconfigured CAN ID
+- Adds button to clear telemetry signals
+- Adds dialog to move the application into the Applications folder on macOS
+- Fixes devices in recovery mode not appearing on macOS
+- Fixes application not updating after clicking the Update button on macOS
+- Adds AdvantageScope logo
+- Fixes AdvantageScope sometimes not loading layout correctly on startup or when loaded from a file
+- Fixes AdvantageScope not resuming when computer wakes from sleep
+- Fixes regression preventing telemetry to resume when reconnecting a device
+
+Version 1.0.3
+- Adds warning when trying to run a motor with the roboRIO present on the bus
+- Adds error toast for when a SPARK parameter value is rejected
+- Adds help dialog when loading devices takes a long time, especially for brand new SPARK MAXes on unsupported factory firmware
+- Adds privacy policy
+- Improves CAN utilization when running multiple devices on telemetry page
+- Prevents multiple instances of the app from running at once
+- Fixes bug causing SPARKs in brushed mode to get set to brushless upon connection
+- Fixes issue with parameters not refreshing when switching devices on telemetry run tab
+- Fixes spike in CAN utilization when opening a SPARK device by switching to lazy loading parameters
+- Fixes issue with SPARK run slider sometimes continuing to drag with mouse after releasing
+- Fixes device list sometimes not updating when unplugging USB
+- Disables highlighting across general areas of the application
+- Updates troubleshooting steps on about page
+
+Version 1.0.2
+- Adds ability to start and stop multiple selected motors simultaneously
+- Fixes high CAN utilization when switching between many SPARK device tabs
+- Fixes an issue causing some SPARKs to continue spinning when disabling multiple at once
+- Fixes an issue causing SPARK devices to resume spinning after leaving the bus and returning
+
+Version 1.0.1
+- Fixes crash when opening on macOS
+- Fixes detection of devices on Linux
+- Fixes app icon
+
+Version 1.0.0
+- Initial stable release of REV Hardware Client 2
+
+REV HARDWARE CLIENT 2 CHANGELOG
+
+Note
+For the most up-to-date changelog, please refer to the About Tab within the REV Hardware Client 2 application.
+
+Version 1.4.2
+- Adds a download location prompt for download actions from Control Hub's Robot Controller Console
+- Improves recovery of wireless Control Hub connections after a Wi-Fi drop
+
+Version 1.4.1
+- Adds a prompt on startup when an update is available, with the option to update now, on exit, or ignore it
+- Adds a prompt on startup showing the changelog after the app has been updated
+- Adds visualizer for absolute encoder utility
+- Adds inversion configuration to A301
+- Adds support for opening the update manager directly from a device's update tab to enable updating multiple devices of the same type
+- Uses Control Hub's friendly name in device list
+- Improves general experience with the FTC Log Viewer
+- Updates the supported devices list on the About page to reflect all currently supported devices
+- Fixes UI crash on Systemcore
+- Fixes Robot Controller Console not working as expected for Control Hubs connected over USB
+- Fixes Expansion Hub firmware version not showing up for Control Hub devices
+- Fixes Control Hub menu labels being illegible in light mode
+- Fixes false positive error toast when attempting to run an A301
+
+Version 1.4.0
+- Adds controller support for running motors
+- Adds auto-fetching latest releases on startup
+- Adds toast to show when an action failed due to being in read-only mode
+- Adds setpoint presets to A301/SPARK run pages
+- Adds FTC Log Viewer
+- Fixes crash when adding closed-loop control telemetry for a SPARK
+- Fixes reset safe parameters showing the incorrect number of changes made
+- Fixes run multiple checkbox not working with A301
+- Fixes moving app to applications folder on macOS
+- Fixes selecting an A301 opening a SPARK with the same CAN ID on the same bus
+
+Version 1.3.1
+- Fixes crash on run tab with A301 on versions before prerelease 16
+
+Version 1.3.0
+- Adds support for connecting to a remote RHC2 instance (like Systemcore) from a desktop client
+- Adds support for installing/updating a Systemcore's RHC2 from the desktop client
+- Adds ability for leader to release control and read-only clients to claim control
+- Adds a prompt for Windows users to install DFU drivers if none are found
+- Adds support for A301's absolute range offset parameter
+- Adds tooltip and animation for identify button
+- Improves robustness of leader/reader mechanism when clients disconnect
+- Updates robot program override to only be controlled by the leader
+- Fixes Systemcore serving a stale, cached UI after an update
+- Fixes frontend crash when downloads database file gets corrupted, particularly on Systemcore
+- Fixes sorting of Motioncore buses in telemetry tab
+
+Version 1.2.1
+- Adds support for new A301 CAN specification introduced in firmware version 27.0.0-prerelease.15
+- Adds the ability to specify a speed for position control in A301's run utility
+- Adds a toggle on the Motioncore card to override the robot program to run motors without a driver station
+- Adds gearbox and motor health status cards for A301
+- Fixes devices not showing up on the Hardware page in Safari
+
+Version 1.2.0
+- Adds support for REV FTC devices (Control Hub, Expansion Hub, Driver Hub, Driver Station Phone)
+- Adds support for CAN Encoder Adapter
+- Adds search bar for signals on Telemetry page
+- Adds search bar for SPARK configuration tab
+- Adds relative encoder utility to MAXSpline Encoder
+- Fixes sidebar on telemetry expanding when a device has an alert in either run tab
+- Fixes issue reporting
+- Fixes issue where signals would freeze after closing a device
+- Fixes issue with A301 CAN ID change not persisting
+- Fixes issue where firmware versions sometimes do not populate in the update page
+
+Known Issues (v1.2.0)
+- When connecting to a Control Hub via Wi-Fi, no other computer will be able to see the Control Hub until it is power-cycled. The same laptop can continue to see and use the Control Hub even if it reconnects or RHC2 is reopened.
+
+Version 1.1.1
+- Adds missing applied output signal for A301
+- Adds indicator to navigation bar to show whether you are in read-only mode
+- Improves startup time
+- Improves CPU and memory utilization during runtime
+- Improves leader/reader behavior
+- Improves download page
+- Improves update progress status display
+- Fixes update progress status when updating multiple devices across separate buses
+
+Version 1.1.0
+- Adds support for A301
+- Adds support for Linux Arm64
+- Adds support for multiple separate CAN buses
+- Adds support for updating the bootloader of supported devices
+- Adds support for devices connected via Motioncore when running on Systemcore
+- Adds relative encoder utility for resetting relative position
+- Improves SPARK setpoint handling to minimize interfering with a connected robot's setpoint commands
+- Fixes issue where SPARKs with pre-2025 firmware are not detected on the CAN bus
+
+Known Issues (v1.1.0)
+- Linux Arm64 does not currently support devices in DFU recovery mode
+
+Version 1.0.7
+- Adds support for configuring new MAXSpline Encoder parameters
+- Fixes start/stop button moving when running a SPARK
+
+Version 1.0.6
+- Fixes motors not stopping immediately when running multiple motors simultaneously
+- Fixes a bug causing devices to appear as remaining in bootloader mode after updating
+
+Version 1.0.5
+- Adds button to install DFU drivers on Windows
+- Adds warning when trying to run a motor without 12V
+- Adds ability to reset SPARK slider to zero by double-clicking on slider handle
+- Fixes splash screen not appearing in the foreground
+- Fixes taskbar icon not appearing immediately on Windows
+- Fixes SPARK slider setpoint resetting to zero after interacting with the minimum and maximum setpoint input boxes
+- Fixes detecting MAXSpline Encoders in bootloader mode
+- Fixes device drawer not defaulting to update page for devices in bootloader mode
+- Fixes firmware version select taking a long time to load for devices in bootloader mode
+
+Version 1.0.4
+- Adds warning about SPARK devices with an unconfigured CAN ID
+- Adds button to clear telemetry signals
+- Adds dialog to move the application into the Applications folder on macOS
+- Fixes devices in recovery mode not appearing on macOS
+- Fixes application not updating after clicking the Update button on macOS
+- Adds AdvantageScope logo
+- Fixes AdvantageScope sometimes not loading layout correctly on startup or when loaded from a file
+- Fixes AdvantageScope not resuming when computer wakes from sleep
+- Fixes regression preventing telemetry to resume when reconnecting a device
+
+Version 1.0.3
+- Adds warning when trying to run a motor with the roboRIO present on the bus
+- Adds error toast for when a SPARK parameter value is rejected
+- Adds help dialog when loading devices takes a long time, especially for brand new SPARK MAXes on unsupported factory firmware
+- Adds privacy policy
+- Improves CAN utilization when running multiple devices on telemetry page
+- Prevents multiple instances of the app from running at once
+- Fixes bug causing SPARKs in brushed mode to get set to brushless upon connection
+- Fixes issue with parameters not refreshing when switching devices on telemetry run tab
+- Fixes spike in CAN utilization when opening a SPARK device by switching to lazy loading parameters
+- Fixes issue with SPARK run slider sometimes continuing to drag with mouse after releasing
+- Fixes device list sometimes not updating when unplugging USB
+- Disables highlighting across general areas of the application
+- Updates troubleshooting steps on about page
+
+Version 1.0.2
+- Adds ability to start and stop multiple selected motors simultaneously
+- Fixes high CAN utilization when switching between many SPARK device tabs
+- Fixes an issue causing some SPARKs to continue spinning when disabling multiple at once
+- Fixes an issue causing SPARK devices to resume spinning after leaving the bus and returning
+
+Version 1.0.1
+- Fixes crash when opening on macOS
+- Fixes detection of devices on Linux
+- Fixes app icon
+
+Version 1.0.0
+- Initial stable release of REV Hardware Client 2
+
+Support Contact Information
+- Email: support@revrobotics.com
+- Phone: 972-360-3316
+Source: Changelog | REV Hardware Client 2
+
+TROUBLESHOOTING - REV HARDWARE CLIENT 2
+
+Note
+Please note that you cannot update the original Hardware Client to Hardware Client 2. You must install Hardware Client 2 separately, as they are completely different applications. While they can be installed simultaneously, it is not recommended to have both open at the same time.
+
+Device Is Not Visible
+If you don't see all of the devices that you expect to see, follow these steps:
+- Make sure that you are connected to the Internet, so that Windows can download the necessary drivers.
+- Disconnect the device from the computer and then reconnect it.
+
+Mac Users and Recovery Mode
+If you plan on using RHC2 on a macOS machine, please note that recovery mode devices will only show up on Mac if the app is copied into /Applications.
+
+SPARK MAX Motor Controller
+- Make sure that the SPARK MAX is not being used by another application, such as the REV SPARK MAX Client.
+- Unplug the SPARK MAX from the computer and plug it back in.
+
+Firmware Compatibility
+To use your device with RHC2, you must have 2026 firmware (v26.x.x). Devices with 2025 firmware or lower must be updated to 2026 via recovery mode. SPARKs can be updated via CAN with RHC2 if the bridge device (the device connected to USB) is updated to firmware 2026.
+
+RECOVERY MODE - REV HARDWARE CLIENT 2
+
+Overview
+Sometimes, when updating the firmware on an ION Control System Device, it is possible for the process to be interrupted or for the firmware to be corrupted by a bad download or other type of interruption in data transfer. In this state, the Status LED will be dark or dim and the device will fail to operate. There is a built-in recovery mode that can force your device to accept new firmware even if the controller seems to be bricked.
+
+Important Note
+Performing this procedure will erase all data and settings on the device. You will need to reconfigure your device after performing recovery mode.
+
+Materials Needed
+- A small tool, like a straightened paper clip or a SIM card removal tool, to press the Mode Button
+- Data-capable USB-C to USB-A cable
+- Computer with the REV Hardware Client 2 installed and updated to the latest version
+
+Recovery Mode Steps
+1. With the Device powered off, press and hold the Mode Button.
+2. While still holding the Mode Button, connect the Device to the computer using the USB-C cable. The Status LED will not illuminate (this is expected).
+3. With the REV Hardware Client 2 running on the computer, wait a few seconds for the audible tone or icon for the device to be recognized, then release the Mode Button. No lights will be present on the device during this stage of the process (this is expected).
+4. Select the DFU Device Bootloader from the list of Connected Devices within the REV Hardware Client 2 window.
+5. From the Device Type dropdown menu, choose the device name that matches the type of device you are attempting to recover. Note: It is possible to install incorrect firmware on your device.
+6. After the proper Device Type has been selected, the Current Firmware Version Dropdown menu will automatically select the most up-to-date firmware. If you wish to install a different version of firmware, select it from this menu. (Firmware must be version 26.x.x or newer to work with REV Hardware Client 2).
+7. Wait for the software update to complete.
+8. Power cycle your device (unplug and plug in USB-C), click on the device's icon, and then clear any sticky faults that may show.
+
+
+MAKE IT SPIN! - REV HARDWARE CLIENT 2
+
+Power On
+Now that the device is wired and connections are checked, power on the robot. The SPARK Flex should slowly blink Magenta for a new device. If the LED is dark or displays a different blink pattern, refer to the Status LED guide. If using a brushed motor, a sensor error may appear initially until configured.
+
+Connect to the SPARK Flex
+If the SPARK Flex is not visible in the client, ensure it is not in use by another application, then disconnect and reconnect its USB connection.
+
+Basic Setup and Configuration
+Before modifying parameters, assign a unique CAN ID between 1 and 63 to the device. Setting a unique CAN ID refreshes the interface to unlock other parameter configurations. Ensure every device on your CAN network has a unique ID and is labeled accordingly.
+
+Set the Motor Type
+- NEO / NEO 550: Set motor type to REV NEO Brushless and sensor type to Hall Effect. Verify the LED blinks Magenta or Cyan.
+- Sensor Fault: If a Sensor Fault blink code appears, check that the encoder cable is securely plugged in.
+
+Limiting Current
+To prevent motor damage from high current, use both an appropriately rated circuit breaker and the SPARK Flex's Smart Current Limit feature (defaulted at 80A).
+Suggested Current Limits:
+- NEO (REV-21-1650): 40A - 60A
+- NEO 550 (REV-21-1651): 20A - 40A
+
+Save the Settings
+Click the Persist Parameters button at the bottom right of the page to save configurations across power cycles.
+
+Spin the Motor
+1. Ensure all components are secure and safe, and the CAN ID is set to a non-zero value.
+2. Keep the CAN cable disconnected from the roboRIO during testing (the client will not run motors if a roboRIO is detected on the bus).
+3. Open the Run tab, keep default settings, and click Run Motor.
+4. Slowly advance the setpoint slider. Green blinking indicates forward motor rotation; red blinking indicates reverse rotation.
+
+SWERVE CALIBRATION - REV HARDWARE CLIENT 2
+
+Prerequisites & Setup
+1. Verify you have completely assembled your MAXSwerve or EasySwerve Module and have the Steering Motor's SPARK Flex or SPARK MAX connected to the Module's Through Bore Encoder.
+2. Install and open the latest version of the REV Hardware Client.
+3. Connect the Steering Motor's SPARK Motor Controller directly to your computer via the included USB-C to USB-A cable.
+4. Select the Steering SPARK from the list of Connected Devices and navigate to the Update Tab to verify your Firmware is up to date.
+5. Ensure the Steering SPARK is still selected, then navigate to Absolute Encoder under the Utilities Tab.
+
+EasySwerve Calibration
+1. Insert a 1/8in or 3mm Hex Key into the calibration hole on the top of the EasySwerve Module until you feel the Hex Key reach the azimuth gear inside of the top cover.
+2. Rotate the module's wheel manually while applying light pressure to the hex key until it slots into the alignment pocket. The Hex key will travel about 1/4in further into the swerve module when it has aligned.
+3. Click the Zero Encoder button to calibrate the zero position of the absolute encoder to this position.

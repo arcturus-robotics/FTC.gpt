@@ -1,0 +1,52 @@
+Servo Usage Tips
+Below are some tips on using servos in FTC®.
+
+Do not backdrive servos. Forcibly rotating a powered servo away from its position risks damaging the internal gears.
+
+Pay attention to a servo’s travel range! The default 600-2400 range of the FTC control system when selecting the “Servo” configuration can make it appear that popular servos like the goBILDA Dual Mode Servos and REV Smart Robot Servos have less range than advertised. Make sure you select the “Full Range Servo” configuration instead to get the full 500-2500 range.
+
+Servo wires usually are black-red-white or black-red-yellow. Matching the colors is an easy way to check if the servo is plugged in correctly. Most servo connectors provide no protection from plugging them the wrong way: if you rotate it 180 degrees, it will still fit - but the servo would not work. (It shouldn’t be damaged, though.) Thus, if your servo is not working, first check if they are plugged in correctly. Then check it again.
+
+When using servo wire extensions, use retaining clips to prevent the connection from coming apart when someone pulls on the wire. Alternatively, electrical tape will work in a pinch.
+Tip
+
+Some vendors sell versions of the 3-pin female connector with retaining clips built-in. BackBayRC on Amazon sells pre-made servo extension wires with locking connectors; and Ferra Components sells both pre-made servo extension wires with locking connectors, and packs of locking connectors you can crimp yourself.
+
+Do not use bare socket head screws to attach servos - when tightened, they will damage the plastic. Use button head screws or socket heads with a washer.
+
+Servos break very easily when subjected to lateral loads or bending of the shaft. For example, if you mount an arm or a claw directly on the servo without any additional precautions, it is very likely that you will break the servo first time you drive into the wall with the arm extended (and this will inevitably happen).
+
+To avoid that, use additional supports. The easiest way to do it is by using ServoBlocks from goBILDA. ServoBlocks act as exoskeletons for the servo, providing additional support. They pay for themselves, since they help protect your servos from getting damaged. Additionally, REV offers the inside and outside channel servo bracket, which when paired with the aluminum servo shaft adapter and bearing assembly, fulfills the same function.
+
+A servo in a compact ServoBlock
+A servo in a compact ServoBlock
+
+Use linkages. Instead of mounting some rotating piece directly on a servo, mount it so it can rotate around a pivot point and then connect it to the servo using linkage as shown below:
+
+linkage
+Linkage example, courtesy of team 4137 Islandbots. A goBILDA flat beam is used as the link.
+
+If you need more power, use a REV Servo Hub or goBILDA 6V Servo Power Injector. This is important for servos under high load conditions.
+
+Term
+
+Servo Power Module
+A Servo Power Module (SPM) is a device made by REV Robotics that boosts the voltage that the Expansion Hub provides to a servo. The Control/Expansion Hub’s output for servos is 5V at 6 amps, and the SPM boosts the voltage to 6V and up to 15amps.
+
+Attention
+
+The Servo Power Module has a tendency to fail spectacularly, burning out the SPM, and sometimes the Control/Expansion Hub it is plugged into. Teams shouold use the newer REV Servo Hub or goBILDA Servo Power Injector instead.
+
+A REV Robotics Servo Power Module
+Servo Hub
+A Servo Hub is a device made by REV Robotics that is a controller like the Expansion Hub, but only controls servos. The Control/Expansion Hub’s output for servos is 5V at 6 amps, but the Servo Hub’s output for servos is 6V and up to 15amps.
+
+Tip
+
+The Servo Hub can make wiring significantly easier in certain circumstances. For example, if you have an arm on a long extension that has 4 servos on it, you can run just the power wire and the data wire to a Servo Hub on the end of the arm, rather than running 4 servo extension cables the entire length.
+
+A REV Robotics Servo Power Module
+goBILDA 6V Servo Power Injector
+A Servo Power Injector (SPI) is a device made by goBILDA that boosts the voltage that the Expansion Hub provides to a servo. The Control/Expansion Hub’s output for servos is 5V at 6 amps, and the SPI boosts the voltage to 6V and up to 24 amps total output. It works similarly to the original REV Servo Power Module, but with significant improvements to maximum output power and overcurrent handling to prevent failure.
+
+A goBILDA 6V Servo Power Injector

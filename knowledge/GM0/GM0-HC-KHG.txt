@@ -1,0 +1,208 @@
+Kit and Hardware Guide
+Before beginning your season, your team is presented with a crucial decision - one that will undoubtedly heavily influence the team’s direction of hardware design in at least the first year. The FIRST® storefront currently offers two kits for new teams: the TETRIX kit from Pitsco, and the REV Starter kit from REV Robotics. However, teams should carefully consider other options, such as goBILDA, before selecting a kit.
+
+Every build system has advantages and disadvantages, which we have highlighted in our detailed build system guides below. While the guide may not be fully objective, recommendations are based on our own experience with the different kits, so the slant is there with reason. As with pretty much anything in FTC®, there is no one right answer - but there are better answers than others. Hopefully, this guide gives some solid advice on which kit might be the best for your team.
+
+Why Use a Kit?
+After all, plenty of successful robots have not followed this framework. However, we still recommend new teams purchase a starter kit for one big reason. Established teams are all but guaranteed to have spare parts lying around to use to build their next bot. However, rookie teams, as is obvious, don’t have the plethora of parts from previous seasons to use. Thus, new teams should purchase these parts themselves in order to have something to build from once the season starts, and starter kits offer these parts for less money than they would be if bought individually. As will be discussed, options that don’t involve kits exist and are certainly very useful, but sticking to parts designed for FTC is recommended for new teams as a starting point.
+
+Which Kit Should One Choose?
+Choice of a kit is a matter of many a debate in FTC forums, and each team has their favorites. If you are a rookie team and do not have any experience with any of the kits above, we would recommend starting with a kit from either REV Robotics or goBILDA. These kits provide a good selection of parts, reliability, and value for money. They are easily expandable and great part flexibility allows for customization. Keep in mind that compatibility between kits varies and will be impacted by the unit system used.
+
+goBILDA (metric) is slightly more expensive, but is easier to get started with. It has an extensive parts catalog and can be adapted to other build systems like REV. However, its price point may deter some teams with lesser budgets.
+
+REV Robotics (metric) is slightly cheaper but generally has a bit higher learning curve than most other kits, as it is extrusion rather than channel based. Extrusion takes more effort to work with (you need to cut aluminum extrusion to length); however, it allows for maximum design freedom and adjustability. REV is also available from the FIRST storefront, which might be convenient for teams doing their purchasing through official school procurement systems.
+
+Tetrix (metric and imperial) is probably the simplest system to work with, but its part selection is limited, and the use of 4.7mm shaft with set screws is inferior to clamping hubs used in other systems.
+
+Kit Options:
+
+goBILDA
+goBILDA (https://www.gobilda.com/) is a fixed-pitch, channel based building system using metric units. It was recently released in the 2018-2019 season and is made by the same company as Actobotics.
+
+Special Considerations
+goBILDA is based on metric measurements using M4 hardware. The hole pattern has 4mm holes on 8mm grid.
+
+The kit is primarily structured around U-channel, which is strong and durable.
+
+goBILDA’s robust motion system allows teams to easily build drivetrains and mechanisms without worrying about placement and tensioning.
+
+It is arguable, but goBILDA has likely a low learning curve due to its simple yet extremely functional catalog of parts.
+
+goBILDA parts can generally be easily adapted to other kit parts such as REV.
+
+Additionally, goBILDA is still being developed at a quick pace and is responsive to the needs of the FTC® community.
+
+goBILDA offers a 25% discount for FIRST® teams.
+
+Notable components
+goBILDA uses 8mm pitch chain and HTD 3 or HTD 5 belts for motion.
+
+goBILDA mostly uses clamping hubs (called Sonic hubs), eliminating the unreliable set screws.
+
+goBILDA shafts are metric (6mm D and 8mm rounded hex).
+
+The primary structural component is the 48mm aluminum U-channel, shown below.
+
+goBILDA U-channel(IN)
+goBILDA U-channel (48x48 mm)
+
+Low-Side channel (smaller profile channel) complements full size channel. Low-Side channel is just 12mm in height and allows for more compact builds. Additionally, Low-Side channel opens up possibilities such as a kit-based parallel plate drivetrain. Low-Side channel also forms the basis of the cascading kit with a 2 or 4 stage option.
+
+goBILDA low-side channel(IN)
+goBILDA low-side channel (12x48 mm)
+
+Mini-Low-Side channel (even smaller profile channel) that compliments Low-Side channel. Mini-Low-Side channel is 12mm tall and just 32mm wide, making it great for small structures.
+
+goBILDA mini-low-side channel(IN)
+goBILDA mini-low-side channel (12x48 mm)
+
+Viper-Slides are goBILDA’s version of the commonly used drawer slides for linear extension in 336mm and 240mm lengths. Notably, goBILDA sells a Viper-Slide kit, which contains all of the parts to assemble either a 2 stack or 4 stack of slides. In addition, they are one of the few vendors who sells a belted version of these slides. The 240mm slide is also uniquely bidirectional, sliding both ways.
+
+goRAIL is extrusion that complements the channel offerings well. goRAIL is used in the linear actuator kit for extending mechanisms.
+
+Verdict
+goBILDA’s kit is a solid, albeit slightly more expensive, option for new teams. It offers a great deal of flexibility and part options from their catalog. goBILDA is a solid choice due to reasonable pricing, low learning curve, and thought-out design that reduces headaches.
+
+Kit of Parts
+https://www.gobilda.com/ftc-starter-kit-2026-2027-season/
+
+NOTE: Gobilda does update their kits every season they can be reused but if its your first time getting a kit the newest one is better and more expensive so check with your coach to see which one is right for you (CWT)
+
+Advantages
+goBILDA’s Low-Side U-channel opens up many new possibilities due to its flexibility and compactness. For example, one can now make a parallel plate drivetrain without custom machining, or make custom width U-channel.
+
+goBILDA also has Servoblocks (identical to Actobotics other than hole pattern) which drastically increase servo life.
+
+goBILDA has native large bore hex shaft support (12 mm REX is comparable to 3/8” rounded hex) which is one of the main advantages of custom fabrication brought to a kit based system.
+
+goBILDA also is able to interface with TETRIX channel because they share some holes. For more information about TETRIX-goBILDA compatibility, check out this website. It is also quite compatible with REV’s ecosystem.
+
+goBILDA has a well thought-out ball bearing based motion system with smart motion transfer. It is easy to do chain or belt in channel.
+
+Note
+
+8mm chain, HTD 3, and HTD 5 mm belt can do perfect C2C (center to center) on the goBILDA pattern. This saves a lot of headache when needing to calculate C2C distances.
+
+goBILDA has plenty of shaft, ball bearing, and pillow block options.
+
+goBILDA motors can face mount natively into channel, eliminating the need for motor mounts and providing a robust, reliable way to mount motors.
+
+goBILDA has some special parts are unavailable in other systems, like square beam shafts.
+
+goBILDA provides a large selection of 12V DC motors. Their Yellow Jacket motors use orbital gearboxes and are available in 10 different gear ratios ranging from 30 RPM to 1620 RPM. No other manufacturer offers such varied gear ratios out of the box.
+
+Disadvantages
+goBILDA is not the cheapest build system; it is relatively equivalent in pricing to Actobotics, but REV is cheaper.
+
+goBILDA U-channels are larger than the channels from Tetrix, resulting in larger builds. However, this is more than compensated by the fact that one can put a goBILDA motor inside a channel. In addition, the introduction of mini-low-side channel allows for more compact builds where needed
+
+Because of metric pattern spacing, goBILDA utilizes 8mm pitch chain, as opposed to the FTC standard #25 Imperial chain. This means that other kits’ chain and sprockets won’t work with goBILDA chain and sprockets.
+
+
+REV Robotics
+The REV kit is an infinite-pitch, extrusion based building system which uses the metric system and M3 hardware.
+
+Special Considerations
+The REV ecosystem is based upon 15x15mm aluminum extrusion and is complemented by 45x45mm channels.
+
+With extrusion, there are no fixed mounting holes, increasing adjustability and flexibility. For example, tensioning chain is simple when sliding the mount or bracket increases tension.
+
+The REV system uses metric dimensions (15 mm extrusion, M3 hardware), with the exception of #25 roller chain (FTC® standard, imperial).
+
+REV has purposefully designed with compatibility in mind, as pattern adapters ease compatibility issues.
+
+Many REV parts are made of Delrin, a high-wear resistance plastic, which reduces overall cost. However, REV offers aluminum options for high-load parts as well.
+
+REV does have a steeper learning curve than channel based build systems, owing to the fact that constructing structurally sound mechanisms requires just a little more thought.
+
+Notable components
+REV’s bread and butter is the 15x15mm aluminum extrusion. It accepts M3 hex screws which slide along the grooves.
+
+In addition, REV also offers both 45x45mm U-channel and 45x45mm C-channel, which is stronger than extrusion and provides stiffness and support when needed.
+
+REV also offers punch tubing for teams wanting a more permanent mounting system while having the flexibility of extrusion.
+
+REV uses 5 mm hex steel shafts and a ball-bearing motion support system. The shaft may be cut to length, which can be very useful for certain use cases. Many vendors have added compatibility to 5 mm hex shaft.
+
+REV offers 3 types of HD HEX motors: spur gear, planetary, and UltraPlanetary motors. The UltraPlanetary has customizable planetary ring gear ratios for a very affordable price.
+
+REV also has pattern adapters for other systems built into many parts such as the aluminum brackets.
+
+Verdict
+The REV kit is good for teams willing to invest the time into an extrusion building system. It is the most flexible kit as it is extrusion based, yet it has the ability to integrate channel along with extrusion. REV offers the option to upgrade parts for those wanting a further investment into the REV building system.
+
+Note
+
+One advantage to the REV kit is the compatibility of 15x15mm MiSUMI extrusion.
+
+15x15mm REV extrusion isn’t as structurally strong as MiSUMI for two reasons.
+
+REV extrusion is 6063 aluminum, while MiSUMI extrusion is made out of A6N01SS-T5 aluminum, a stronger and stiffer alloy.
+
+The MiSUMI extrusion has a larger surface area, so there is more area of contact.
+
+MiSUMI offers greater strength at a lower bulk cost. Additionally, MiSUMI will cut to the half millimeter for free, making it a great option for teams needing an exact cut. The drawback to MiSUMI is that it is quite a bit heavier than the REV extrusion. It is encouraged that teams use MiSUMI for drivetrain and structural support, and REV for mechanisms that will be under low to medium load.
+
+REV also sells punch tubing, which is 15 mm aluminum tubing that allows teams to use the 15 mm REV building system without having the disadvantages of extrusion, such as that parts come loose over time.
+
+With punch tubing, teams must pre-drill holes and attach, unlike extrusion, where teams can slide and adjust mechanisms.
+
+Thus, it is recommended that teams use extrusion in prototyping/iterative design, and use punch tubing on the final iteration of their robot to save money. Punch tubing is compatible with the Metric Step Drill and 1/8” or 3.2mm pop-rivets.
+
+A piece of REV Robotics 15mm punch tubing(IN)
+A piece of rev extrusion(IN)
+REV 15x15mm Extrusion
+
+A technical drawing of MiSUMI Extrusion's profile(IN)
+MiSUMI 15x15mm Extrusion Profile
+
+Kit of Parts
+FTC Starter Kit V3.1 https://www.revrobotics.com/rev-45-3529/
+
+Advantages
+Extrusion systems don’t need to worry about tensioning as mounts are adjustable to your needs.
+
+Extrusion allows teams to save space as opposed to channel, and is lighter than aluminum channel.
+
+Extrusion allows infinite positioning options instead of being locked in to a specific distance - useful for fine-tuning a mechanism.
+
+Delrin products are inexpensive yet durable for most use cases.
+
+REV has the option to upgrade to aluminum parts if need be - something that no other build system offers. (not for all parts)
+
+5 mm hex is a robust shaft and motion system and is easily adaptable to UltraHex 1/2” hex shaft. Other companies have adapting options with 5 mm hex.
+
+Punch Tubing is a great final iteration option if you are sure about placement.
+
+Channel complements extrusion extremely well - having the adjustability of extrusion and the rigidity of channel makes it a very solid build system.
+
+Generally, REV products are designed with affordability in mind, and so the components are of good value for money.
+
+Disadvantages
+15x15mm extrusion is not as sturdy as channel options under high stress loads.
+
+Steeper learning curve, more time consuming to measure and cut extrusion to length.
+
+Requires tools such as a saw and bandsaw.
+
+Requires forethought and planning of extrusion length and placement.
+
+Parts loosen over time (to remediate: use punch tubing)
+
+M3 bolts, especially those sold directly by REV, are prone to bending under higher load (such as when used as an axle for a pulley)
+
+5 mm hex shaft is also prone to bending, especially if the shaft is long.
+
+TETRIX(CWT)
+Custom
+
+Many teams elect to ignore kits entirely and instead make their own mechanisms completely from scratch. While this allows for nearly unlimited design freedom, keep in mind full Custom has many caveats and drawbacks. A full CAD model is required for a custom robot, as well as machining capability. Custom robots are not suitable for a new team.
+
+However, forgoing a full custom robot opens up many opportunities. Many teams choose to create a robot that is a mix of kit parts and custom parts. Our recommendation is to use kit parts as the backbone of the robot, and custom fabricate any additional parts necessary, instead of the other way around. That way, you can rely on the strength and durability of the kit while retaining the ability to customize small pieces and mechanisms to your advantage.
+
+The methods that teams use to make custom parts typically involve either additive or subtractive manufacturing: either building a part from raw material (3d printing) or removing material from stock to create a part (Milling, Routing, and Laser Cutting).
+
+You can now find details on 3d printing and milling in our Custom Manufacturing section, with tutorials and general tips to help bring your parts from CAD to real life.
+
+
