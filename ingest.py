@@ -24,7 +24,7 @@ except ImportError:
 
 # Configuration
 
-OLLAMA_HOST = "http://100.83.57.34:11434"
+OLLAMA_HOST = "http://localhost:11434"
 DEFAULT_MODEL = "nomic-embed-text"
 DEFAULT_OUT = "chunks.jsonl"
 CHUNK_SIZE = 256          # Target characters per chunk
