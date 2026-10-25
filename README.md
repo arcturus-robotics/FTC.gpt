@@ -1,13 +1,13 @@
 <h2>FTC.gpt</h2>
 
-This is a project to help out teams who may benifit from a database of important documents, all fed to an ai model to answer questions and provide insight.
+This is a project to help out teams who may benefit from a database of important documents, all fed to an AI model to answer questions and provide insight.
 <h4>Dependencies:</h4>
 
 * Ollama
   * gemma4:e4b
   * nomic-embed-text
 
-<h4>Install Insturctions:</h4>
+<h4>Install Instructions:</h4>
 
 1. Download the package for macOS or Windows, if you're using Linux you probably know how to run from source so do that.
 
