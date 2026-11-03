@@ -1,0 +1,51 @@
+category,question,expected_answer,expected_source,must_include
+rules,What is the max robot size at the start of a match?,18 in x 18 in x 18 in (R102),TU06,18
+rules,How big can our robot get once it expands?,18 in by 24 in by 29 in tall when fully expanded (R105),TU06,24;29
+rules,Is there a weight limit for the robot?,No explicit weight limit (R104),TU06,no
+rules,How many motors and servos can we use?,Up to 8 motors and 8 servos across all mechanisms and configurations (R503),TU06,8
+rules,If we swap mechanisms between matches do both count toward the motor limit?,"Yes. All configurations used at an event count toward the total (R503, I302)",TU06,
+rules,Can we use two batteries on the robot?,No. Exactly 1 approved 12V NiMH main battery (R601),TU06,
+rules,Can we change the connector on our battery?,Yes. Connectors may be replaced with popular connectors like Anderson Powerpole or XT30 of comparable rating (R601),TU06,
+rules,Can we use an extra Expansion Hub?,"Yes, no more than one additional REV Expansion Hub (R701)",TU06,
+rules,What can we plug into USB on the control system?,"Webcams and optical vision sensors, a USB hub or switch, and a REV Expansion Hub (R707)",TU06,webcam
+rules,Can we use a stereo camera?,No. Only single image sensor devices natively supported by the Robot Controller app (R708),TU06,
+rules,Are lasers legal?,"Only if part of a sensor, Class I or Exempt, and non-visible (R710)",TU06,sensor
+rules,Can we use pneumatics?,No pneumatic actuators. Only sealed COTS pre-charged closed-air systems such as gas shocks (R801),TU06,
+rules,Can we reuse last year's code?,"Yes. Software, designs and fabricated items made before Kickoff are permitted (R304)",TU06,
+rules,How big do robot signs need to be and how many?,"At least 2, minimum 6.5 in wide and 2.5 in tall, on surfaces at least 90 degrees apart (R401)",TU06,6.5;2.5
+rules,Can we use season game pieces as part of the robot?,No. Scoring elements and replicas are not allowed in construction (R305),TU06,
+rules,How long is auto and how long is teleop?,30 seconds of AUTO and 2 minutes of TELEOP,TU06,30
+rules,Do we have to pick an OpMode if we have no auto?,Yes. Teams must select and INIT an OpMode regardless (G305),TU06,INIT
+rules,Can we touch the driver station during auto?,"No, except start, stop, or for safety (G401)",TU06,
+rules,Can the robot move between auto and teleop?,"No powered movement. Inertia, gravity or de-energizing is not a violation (G403)",TU06,
+rules,How many game pieces can the robot hold at once?,No more than 4 scoring elements (G407),TU06,4
+rules,When can we score nectar in the flowers?,Only in the last 60 seconds of the match (G410),TU06,60
+rules,When can the human player put nectar on the field?,"When 60 seconds or less remain, or one extra each time their alliance HIVE is TIPPED (G426)",TU06,60
+rules,How long can we pin another robot?,No more than 3 seconds (G421),TU06,3
+rules,Can our drive coach hold the gamepad during a match?,No (G423),TU06,
+rules,What happens if we do not show up to a qual match?,"If the robot passed initial inspection and no drive team member reports, DISQUALIFIED from that match (G203)",TU06,
+rules,How many people can talk to the head ref?,"Up to 2, one of whom must be a student (T301)",TU06,2
+rules,How long do we have to dispute a qualification match?,"Any time before alliance selection begins, or within 5 minutes of the last qual match at events without playoffs (T302)",TU06,
+rules,How much break do we get between back to back matches?,At least 5 minutes in quals and 8 minutes in playoffs (T406),TU06,5;8
+rules,Can we pick a team that already declined someone else?,No (T702),TU06,
+rules,Do we get a backup team in playoffs?,No (T703),TU06,
+software,What are bulk reads and why use them?,"A LynxCommand that reads all non-I2C sensor values on a hub at once, saving loop time",TutorialsGM0,
+software,Do I need RUN_USING_ENCODER for encoders to work?,"No, it is a common misunderstanding that the mode is required just to read encoders",Programming Concepts,
+software,How do I get the list of connected hubs in code?,hardwareMap.getAll(LynxModule.class),GM0-S-LM,getAll
+software,How much current is my hub pulling?,Use getCurrent() on the LynxModule,GM0-S-LM,getCurrent
+software,What I2C speeds does the REV hub support?,100 kHz and 400 kHz,GM0-S-SDK-SENSORS,400
+software,Should I multithread hardware calls?,"At best ineffective, because LynxCommands are blocking with a master lock on each USB device",GM0-S-SDKC,
+software,Where does my Pinpoint plug in?,"An I2C port other than port 0, because the built-in IMU uses port 0",TuningPedroPathing,port 0
+software,Which Pinpoint ports do the odometry pods use?,"Forward pod in the x port, strafe pod in the y port",TuningPedroPathing,
+hardware,What is the difference between mecanum and omni wheels?,"Omni rollers are at 90 degrees to wheel rotation, mecanum rollers are generally 45 degrees",GM0-CME-D,45
+hardware,Should dead wheels be spring loaded?,"Yes, spring tensioning is highly recommended to keep them in contact with the ground",GM0-CME-DW,spring
+hardware,Where do I plug in the Limelight 3A?,USB 3.0 port (blue) on the Control Hub,LIMELIGHT,3.0
+hardware,Which REV Hardware Client should I use?,REV Hardware Client 2. The original has reached end of life,REV HARDWARE CLIENT,
+hardware,What is PLA good for on a robot?,Easy to print and good for fit checks and prototypes. It can soften with heat and be less suitable for impact,Handbook,
+hardware,Do all servos on a hub share 5V?,5V power is shared between pairs of ports,GM0-S-SDK-SERVO,pairs
+unanswerable,What will next season's game be?,Not in the docs. Should say so and suggest the Q&A forum,,forum
+unanswerable,What time does the Atlanta qualifier start?,Not in the docs. Should say so,,forum
+unanswerable,What is Team 13245's best match score this season?,Not in the docs. Should say so,,forum
+unanswerable,How much does a new Control Hub cost right now?,Not in the docs. Should say so,,forum
+unanswerable,Who won the 2026 World Championship?,Not in the docs. Should say so,,forum
+unanswerable,Can I use a Raspberry Pi 5 running my own firmware as the Robot Controller?,Not allowed: only a REV Control Hub or Android phone with Expansion Hub (R701). Must not invent permission,TU06,R701

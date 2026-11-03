@@ -2,3 +2,4 @@ numpy
 pypdf
 pyinstaller
 requests
+python-docx
