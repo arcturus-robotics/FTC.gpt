@@ -27,10 +27,10 @@ except ImportError:
 OLLAMA_HOST = "http://localhost:11434"
 DEFAULT_MODEL = "nomic-embed-text"
 DEFAULT_OUT = "chunks.jsonl"
-CHUNK_SIZE = 256          # Target characters per chunk
-CHUNK_OVERLAP = 32        # Overlap between chunks (characters)
+CHUNK_SIZE = 1200         # Target characters per chunk
+CHUNK_OVERLAP = 150       # Overlap between chunks (characters)
 PARAGRAPH_SEP = "\n\n"
-SUPPORTED_EXTENSIONS = {".txt", ".md", ".rst", ".pdf"}
+SUPPORTED_EXTENSIONS = {".txt", ".md", ".rst", ".pdf", ".docx"}
 
 # Text Splitting
 """
@@ -156,7 +156,7 @@ class OllamaEmbedder:
             resp = requests.post(
                 f"{self.host}/api/embed",
                 json={"model": self.model, "input": texts},
-                timeout=30
+                timeout=120
             )
             
             if resp.status_code != 200:
@@ -213,6 +213,21 @@ def extract_text(filepath: str) -> Optional[str]:
             sys.exit(1)
         except Exception as e:
             print(f"Error extracting PDF {filepath}: {e}")
+            return None
+    elif ext == '.docx':
+        try:
+            import docx
+            document = docx.Document(filepath)
+            parts = [p.text for p in document.paragraphs if p.text.strip()]
+            for table in document.tables:
+                for row in table.rows:
+                    parts.append(" | ".join(cell.text.strip() for cell in row.cells))
+            return "\n\n".join(parts)
+        except ImportError:
+            print("Error: 'python-docx' library required for DOCX support. Install with: pip install python-docx")
+            sys.exit(1)
+        except Exception as e:
+            print(f"Error extracting DOCX {filepath}: {e}")
             return None
     else:
         try:

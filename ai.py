@@ -47,8 +47,9 @@ def default_chunks() -> str:
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
 EMBED_MODEL = "nomic-embed-text"   # MUST match the model used at ingest time
 DEFAULT_ANSWER_MODEL = os.environ.get("FTC_MODEL", "gemma4:e4b")
-TOP_K = 55                         # Max chunks handed to the model
+TOP_K = 18                         # Max chunks handed to the model
 SIMILARITY_THRESHOLD = 0.2         # Minimum cosine similarity to include
+NUM_CTX = 12288                      # Ollama context window: chunks + history + reply
 HISTORY_TURNS = 6                  # Prior messages kept for follow-up questions
 MAX_FILE_CHARS = 20000             # Per attached file
 HTML_PATH = bundled("ftc-gpt.html")
@@ -146,7 +147,12 @@ def answer(messages: list, store: ChunkStore, model: str) -> dict:
     chat = [{"role": "system", "content": SYSTEM_PROMPT}, *history,
             {"role": "user", "content": user_prompt}]
 
-    reply = ollama("/api/chat", {"model": model, "messages": chat, "stream": False}, 120)
+    reply = ollama("/api/chat", {
+        "model": model,
+        "messages": chat,
+        "stream": False,
+        "options": {"num_ctx": NUM_CTX},
+    }, 120)
     sources = list(dict.fromkeys(r["source_file"] for r in results))
     return {"answer": reply["message"]["content"], "sources": sources}
 
