@@ -55,6 +55,7 @@ Regarless of OS:
 * Open the link shown in the terminal, or open a web browser and paste in `http://localhost:8000`
 
 The interface should now be ready to use! Enjoy!
+Feel free to refine the model to accommodate your team's needs. We'd love to hear your feedback!
 
 
 
