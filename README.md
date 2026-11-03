@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <h2>FTC.gpt</h2>
 
 This is a project to help out teams who may benefit from a database of important documents, all fed to an AI model to answer questions and provide insight.
@@ -60,3 +61,61 @@ Feel free to refine the model to accommodate your team's needs. We'd love to hea
 
 
 
+=======
+<h2>FTC.gpt</h2>
+
+This is a project to help out teams who may benefit from a database of important documents, all fed to an AI model to answer questions and provide insight.
+<h4>Dependencies:</h4>
+
+* Ollama
+  * gemma4:e4b
+  * nomic-embed-text
+
+<h4>Install Instructions:</h4>
+
+1. Download the package for macOS or Windows, if you're using Linux you probably know how to run from source so do that.
+
+2. Install Ollama:
+
+   **Windows (recommended - automated):**
+   * Open a Command Prompt or PowerShell window
+   * Navigate to the FTC.gpt folder
+   * Run `python setup.py` (downloads and installs Ollama, pulls both required models, starts the service. should also work on macos and linux but untested)
+
+   **Windows (manual):**
+   * `irm https://ollama.com/install.ps1 | iex`
+
+   **macOS/Linux:**
+   * `curl -fsSL https://ollama.com/install.sh | sh`
+
+   If you already have Ollama installed, just pull the models:
+   * `ollama pull gemma4:e4b`
+   * `ollama pull nomic-embed-text`
+
+<h4>Usage Instructions:</h4>
+
+Windows:
+
+1. If you used `setup_ollama.py`, Ollama is already running. Otherwise, open PowerShell and run `ollama serve`
+2. Run the executable file downloaded in step 1 of Install Instructions
+
+macOS:
+
+1. Open `Terminal.app` and run `ollama serve` (makes ollama reachable via localhost)
+2. Run the executable file downloaded in step 1 of Install Instructions
+
+Linux:
+
+1. Run `ollama serve` (makes ollama reachable via localhost)
+2. In a seperate terminal window, `cd` into the project directory
+3. Run `python3 ai.py` (tested on python 3.9 and 3.12) 
+
+Regarless of OS:
+
+* Open the link shown in the terminal, or open a web browser and paste in `http://localhost:8000`
+
+The interface should now be ready to use! Enjoy!
+
+
+
+>>>>>>> 737c0d0 (more data, updated readme, added setup script)
